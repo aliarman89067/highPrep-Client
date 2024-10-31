@@ -4,6 +4,7 @@ import { chapterData } from "@/constant/chapterData";
 // import { useEffect, useState } from "react";
 // import axios from "axios";
 import { Link } from "react-router-dom";
+import { unitData } from "@/constant/unitData";
 
 export default function Chapters() {
   // const [data, setData] = useState<any>([]);
@@ -26,6 +27,16 @@ export default function Chapters() {
 
   //   return totalUnits;
   // };
+  const handleLessonsCount = (gradeId: number, subjectName: string) => {
+    const unit = unitData.find((unit) => unit.id === gradeId);
+    // @ts-ignore
+    const lessons = unit[subjectName];
+    const lessonCount = lessons.reduce(
+      (total: number, acc: any) => total + acc.lessons.length,
+      0
+    );
+    return lessonCount;
+  };
   const colors = ["#0B863C", "#EABC00", "#7027A5", "#C83131"];
   return (
     <MaxWidthWrapper classNames=" flex flex-col mt-10 ">
@@ -78,7 +89,7 @@ export default function Chapters() {
                       to={`/${grade.gradeName}/${item.name}/${grade.id}`}
                       className="text-sm text-blue font-poppins hover:underline"
                     >
-                      {item.skills} Skills &gt;&gt;
+                      {handleLessonsCount(grade.id, item.name)} Skills &gt;&gt;
                       {/* {showUnitsLength(item.chapters)} Skills &gt;&gt; */}
                     </Link>
                   </div>

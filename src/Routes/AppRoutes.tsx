@@ -1,17 +1,23 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "../Pages/Home";
 // import Subject from "@/Pages/Subject";
 import Unit from "@/Pages/Unit";
 import SubjectTemp from "@/Pages/SubjectTemp";
-import { useLoginModal, useSignupModal } from "@/context";
+import { useLoginModal, useSignupModal, useUser } from "@/context";
 import { useEffect } from "react";
 import LoginForm from "@/components/LoginForm";
 import SignupForm from "@/components/SignupForm";
 import MemberShip from "@/Pages/MemberShip";
+import axios from "axios";
+import PaymentCompleted from "@/Pages/PaymentCompleted";
+import PaymentCancelled from "@/Pages/PaymentCancelled";
 
 export default function AppRoutes() {
+  const { pathname } = useLocation();
+
   const { isOpen: isLoginOpen } = useLoginModal();
   const { isOpen: isSignupOpen } = useSignupModal();
+  const { _id, setUser } = useUser();
 
   useEffect(() => {
     if (isLoginOpen || isSignupOpen) {
@@ -20,6 +26,20 @@ export default function AppRoutes() {
       document.body.style.overflowY = "auto";
     }
   }, [isLoginOpen, isSignupOpen]);
+
+  useEffect(() => {
+    if (!_id) return;
+    axios
+      .post("/check-user", { userId: _id })
+      .then(({ data }) => {
+        if (data.success === false) {
+          setUser({ _id: "", email: "", image: "", name: "" });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [pathname]);
 
   return (
     <div className="w-full h-full relative">
@@ -74,6 +94,8 @@ export default function AppRoutes() {
           element={<Unit />}
         />
         <Route path="/membership" element={<MemberShip />} />
+        <Route path="/payment-completed" element={<PaymentCompleted />} />
+        <Route path="/payment-cancelled" element={<PaymentCancelled />} />
       </Routes>
     </div>
   );

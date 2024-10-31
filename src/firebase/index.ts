@@ -5,11 +5,11 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCeukbVSnycp_9taRHT-FsERjH8-nv0GlU",
-  authDomain: "highprepschool-client.firebaseapp.com",
-  projectId: "highprepschool-client",
-  storageBucket: "highprepschool-client.appspot.com",
-  messagingSenderId: "1095130093524",
+  apiKey: "AIzaSyAjRf4mK_3ciH_56F5JY-BfvSjxFbbXGoM",
+  authDomain: "highprepschool.firebaseapp.com",
+  projectId: "highprepschool",
+  storageBucket: "highprepschool.appspot.com",
+  messagingSenderId: "518689222976",
   appId: import.meta.env.FIREBASE_APP_ID,
 };
 

@@ -7,7 +7,7 @@ export const membershipData = [
   },
   {
     price: 10,
-    heading1: "4 Month",
+    heading1: "4 Months",
     heading2: "Subscription",
     color: "#38B000",
   },
