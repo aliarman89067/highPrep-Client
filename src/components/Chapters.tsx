@@ -1,8 +1,8 @@
 import { Medal } from "lucide-react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { chapterData } from "@/constant/chapterData";
-import { useEffect, useState } from "react";
-import axios from "axios";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function Chapters() {
