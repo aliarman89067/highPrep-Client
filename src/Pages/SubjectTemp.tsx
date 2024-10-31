@@ -2,7 +2,7 @@ import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
 import { unitData } from "@/constant/unitData";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export default function SubjectTemp() {
   const { gradeName, subjectName, gradeId } = useParams();
@@ -33,7 +33,7 @@ export default function SubjectTemp() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
           {data.length > 0 &&
-            data.map((chapter, index) => (
+            data.map((chapter: any, index: any) => (
               <div key={index} className="flex flex-col gap-3">
                 <div className="flex gap-2 items-center">
                   <p className="text-gray-800 text-lg font-medium">

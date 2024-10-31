@@ -3,7 +3,6 @@ import { twMerge } from "tailwind-merge";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { Dispatch, SetStateAction } from "react";
 import axios from "axios";
-import { useLoginModal, useSignupModal, useUser } from "@/context";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

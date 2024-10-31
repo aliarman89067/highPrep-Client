@@ -1,11 +1,4 @@
-import {
-  createElement,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import icons from "@/constant/icons";
 
@@ -53,17 +46,19 @@ export default function ChooseUnit({
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
+      // @ts-ignore
       const topValue = el.style.top;
       return topValue && topValue;
     });
 
     newElements.sort((a, b) => {
+      // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 
     let htmlString = "";
 
-    newElements.forEach((el, index) => {
+    newElements.forEach((el) => {
       const div = document.createElement("div");
       div.style.position = "relative";
 
@@ -74,8 +69,10 @@ export default function ChooseUnit({
         document.body.removeChild(el);
       } else {
         if (el.tagName === "DIV" && el.id) {
+          // @ts-ignore
           const widthValue = Number(el.style.width.replace("px", ""));
           if (widthValue > 300) {
+            // @ts-ignore
             el.style.width = "280px";
             div.appendChild(el);
           } else {
@@ -101,11 +98,13 @@ export default function ChooseUnit({
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
+      // @ts-ignore
       const topValue = el.style.top;
       return topValue && topValue;
     });
 
     newElements.sort((a, b) => {
+      // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 
@@ -142,18 +141,20 @@ export default function ChooseUnit({
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
+      // @ts-ignore
       const topValue = el.style.top;
       return topValue && topValue;
     });
 
     newElements.sort((a, b) => {
+      // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 
     let htmlString = "";
     let increaseHeight = 0;
 
-    newElements.forEach((el, index) => {
+    newElements.forEach((el) => {
       const div = document.createElement("div");
       div.style.position = "relative";
 
@@ -182,10 +183,12 @@ export default function ChooseUnit({
     div.innerHTML = htmlDataCorrect;
     const elements = Array.from(div.querySelectorAll("*"));
     const newElements = elements.filter((el) => {
+      // @ts-ignore
       const topValue = el.style?.top;
       return topValue && topValue;
     });
     newElements.sort((a, b) => {
+      // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 
@@ -194,8 +197,10 @@ export default function ChooseUnit({
     parentDiv.style.height = data?.questionHeight + "px";
     newElements.forEach((el) => {
       if (el.tagName === "DIV") {
+        // @ts-ignore
         const widthValue = Number(el.style.width.replace("px", ""));
         if (widthValue > 300) {
+          // @ts-ignore
           el.style.width = "270px";
         }
       }

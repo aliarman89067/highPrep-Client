@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Button } from "./ui/button";
 import { Repeat, SkipForward, Undo2 } from "lucide-react";
 import { Link } from "react-router-dom";

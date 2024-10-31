@@ -6,26 +6,26 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function Chapters() {
-  const [data, setData] = useState<any>([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data: gradesData } = await axios.get("/getGrades");
-        setData(gradesData);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+  // const [data, setData] = useState<any>([]);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const { data: gradesData } = await axios.get("/getGrades");
+  //       setData(gradesData);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+  // }, []);
 
-  const showUnitsLength = (chapters: any) => {
-    const totalUnits = chapters.reduce(
-      (total: any, acc: any) => total + acc.units.length,
-      0
-    );
+  // const showUnitsLength = (chapters: any) => {
+  //   const totalUnits = chapters.reduce(
+  //     (total: any, acc: any) => total + acc.units.length,
+  //     0
+  //   );
 
-    return totalUnits;
-  };
+  //   return totalUnits;
+  // };
   const colors = ["#0B863C", "#EABC00", "#7027A5", "#C83131"];
   return (
     <MaxWidthWrapper classNames=" flex flex-col mt-10 ">

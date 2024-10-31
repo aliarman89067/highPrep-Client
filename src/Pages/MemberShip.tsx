@@ -1,6 +1,5 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
 import { membershipData } from "@/constant/membershipData";
 
 export default function MemberShip() {

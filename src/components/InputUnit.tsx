@@ -49,11 +49,13 @@ export default function InputUnit({
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
+      // @ts-ignore
       const topValue = el.style.top;
       return topValue && topValue;
     });
 
     newElements.sort((a, b) => {
+      // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 
@@ -70,8 +72,10 @@ export default function InputUnit({
         document.body.removeChild(el);
       } else {
         if (el.tagName === "DIV" && el.id) {
+          // @ts-ignore
           const widthValue = Number(el.style.width.replace("px", ""));
           if (widthValue > 300) {
+            // @ts-ignore
             el.style.width = "280px";
             div.appendChild(el);
           } else {
@@ -99,11 +103,13 @@ export default function InputUnit({
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
+      // @ts-ignore
       const topValue = el.style.top;
       return topValue && topValue;
     });
 
     newElements.sort((a, b) => {
+      // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 
@@ -142,11 +148,13 @@ export default function InputUnit({
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
+      // @ts-ignore
       const topValue = el.style.top;
       return topValue && topValue;
     });
 
     newElements.sort((a, b) => {
+      // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 

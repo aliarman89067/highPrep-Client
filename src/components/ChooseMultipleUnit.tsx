@@ -204,7 +204,7 @@ export default function ChooseMultipleUnit({
         const tempDivWrong = document.createElement("div");
         tempDivWrong.innerHTML = htmlDataWrong;
         const divElementsWrong = tempDivWrong.querySelectorAll("img");
-        divElementsWrong.forEach((img, index) => {
+        divElementsWrong.forEach((img) => {
           if (img.id) {
             img.style.top = "0%";
             img.style.opacity = "100%";

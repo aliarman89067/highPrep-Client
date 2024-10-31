@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../Pages/Home";
-import Subject from "@/Pages/Subject";
+// import Subject from "@/Pages/Subject";
 import Unit from "@/Pages/Unit";
 import SubjectTemp from "@/Pages/SubjectTemp";
 import { useLoginModal, useSignupModal } from "@/context";
