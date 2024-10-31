@@ -6,4 +6,6 @@ import App from "./App.tsx";
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
 
+console.log(meta.env.VITE_API_BASE_URL);
+
 createRoot(document.getElementById("root")!).render(<App />);
