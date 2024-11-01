@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
 import images from "@/constant/images";
 import { Facebook, Mail, Phone, Twitter } from "lucide-react";
-import React from "react";
 
 export default function ContactUs() {
   const contactData = [
