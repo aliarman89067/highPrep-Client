@@ -58,7 +58,7 @@ export default function Subject() {
                         {index + 1}.
                       </p>
                       <Link
-                        to={`/${gradeName}/${subjectName}/${subjectId}/${unit?._id}`}
+                        to={`/${gradeName}/${subjectName}/${subjectId}/${unit?._id}/${unit.name}`}
                         className="text-gray-800 text-base hover:underline"
                       >
                         {unit?.name}

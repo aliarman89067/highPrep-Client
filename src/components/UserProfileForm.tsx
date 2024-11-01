@@ -179,10 +179,7 @@ export default function UserProfileForm({
           name="image"
           render={() => (
             <FormItem className="flex-1 flex flex-col">
-              <FormLabel>
-                Image
-                <span className="text-xs text-gray-500 ml-2">*Optional</span>
-              </FormLabel>
+              <FormLabel>Image</FormLabel>
               <FormControl>
                 <>
                   {isButtonLoading ? (

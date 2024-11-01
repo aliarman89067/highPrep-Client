@@ -12,6 +12,8 @@ import axios from "axios";
 import PaymentCompleted from "@/Pages/PaymentCompleted";
 import PaymentCancelled from "@/Pages/PaymentCancelled";
 import Profile from "@/Pages/Profile";
+import AboutUs from "@/Pages/AboutUs";
+import ContactUs from "@/Pages/ContactUs";
 
 export default function AppRoutes() {
   const { pathname } = useLocation();
@@ -94,13 +96,15 @@ export default function AppRoutes() {
           element={<SubjectTemp />}
         /> */}
         <Route
-          path="/:gradeName/:subjectName/:subjectId/:unitId"
+          path="/:gradeName/:subjectName/:subjectId/:unitId/:unitName"
           element={<Unit />}
         />
         <Route path="/membership" element={<MemberShip />} />
         <Route path="/payment-completed" element={<PaymentCompleted />} />
         <Route path="/payment-cancelled" element={<PaymentCancelled />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/contactus" element={<ContactUs />} />
       </Routes>
     </div>
   );

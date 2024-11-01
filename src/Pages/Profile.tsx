@@ -3,6 +3,7 @@ import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import UserHistory from "@/components/UserHistory";
 import UserProfileForm from "@/components/UserProfileForm";
 import { useUser } from "@/context";
 import axios from "axios";
@@ -21,6 +22,13 @@ export default function Profile() {
     expiresAt: string;
     packagePrice: number;
     oAuth: boolean;
+    playedSubUnits: {
+      gradeName: string;
+      subjectName: string;
+      subjectId: string;
+      unitId: string;
+      unitName: string;
+    }[];
   };
 
   // Hooks
@@ -192,7 +200,9 @@ export default function Profile() {
             </div>
             {/* User Info End */}
           </TabsContent>
-          <TabsContent value="history">Change your password here.</TabsContent>
+          <TabsContent value="history">
+            <UserHistory playedSubUnits={data?.playedSubUnits} />
+          </TabsContent>
         </Tabs>
       </MaxWidthWrapper>
     </>

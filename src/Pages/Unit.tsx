@@ -11,7 +11,7 @@ import ChooseMultipleUnit from "@/components/ChooseMultipleUnit";
 import UnitComplete from "@/components/UnitComplete";
 
 export default function Unit() {
-  const { gradeName, subjectName, subjectId, unitId } = useParams();
+  const { gradeName, subjectName, subjectId, unitId, unitName } = useParams();
 
   const [data, setData] = useState<any>();
   const [isIncomplete, setIsIncomplete] = useState<boolean>(false);
@@ -27,7 +27,13 @@ export default function Unit() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await axios.get(`/getUnit/${unitId}`);
+      const { data } = await axios.post(`/getUnit`, {
+        gradeName,
+        subjectName,
+        subjectId,
+        unitId,
+        unitName,
+      });
       setData(data);
     })();
   }, []);
