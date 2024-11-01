@@ -6,6 +6,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/context";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   userImage: string;
@@ -15,9 +17,11 @@ interface Props {
 export default function NavbarDropdown({ userImage, userName }: Props) {
   // hooks
   const { setUser } = useUser();
+  const navigate = useNavigate();
 
   // Other functions
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    await axios.delete("/logout-user");
     setUser({ _id: "", name: "", email: "", image: "" });
     window.location.reload();
   };
@@ -36,7 +40,9 @@ export default function NavbarDropdown({ userImage, userName }: Props) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate("/profile")}>
+          Profile
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logoutUser}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
