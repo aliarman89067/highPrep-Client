@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import images from "@/constant/images";
-import { useEffect, useState } from "react";
 
 export default function AboutUs() {
   return (
