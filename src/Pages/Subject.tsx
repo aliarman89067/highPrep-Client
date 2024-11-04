@@ -1,13 +1,49 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
+import { unitTimers } from "@/context";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 export default function Subject() {
+  const { pathname } = useLocation();
   const [data, setData] = useState<any>();
+  const { end, isStart, timer } = unitTimers();
 
   const { gradeName, subjectId, subjectName } = useParams();
+
+  useEffect(() => {
+    const regexExp =
+      /^\/[A-Za-z0-9%]+\/[A-Za-z]+\/[A-Fa-f0-9]+\/[A-Fa-f0-9]+\/[A-Za-z0-9%]+$/;
+    if (!regexExp.test(pathname)) {
+      if (isStart) {
+        timer.endTime = Date.now();
+        // API
+        const difference = timer.endTime - timer.startTime;
+        const totalSeconds = Math.floor(difference / 1000);
+
+        // Calculate hours, minutes, and seconds
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        const formattedDifference = `${hours}:${minutes}:${seconds}`;
+        // API
+        axios
+          .post("/update-play-time", {
+            playedSubUnitsId: timer.playedSubUnitsId,
+            time: formattedDifference,
+          })
+          .then(({ data }) => {
+            console.log(data);
+          });
+
+        timer.playedSubUnitsId = null;
+        timer.startTime = 0;
+        timer.endTime = 0;
+        end();
+      }
+    }
+  }, [pathname]);
 
   useEffect(() => {
     (async () => {

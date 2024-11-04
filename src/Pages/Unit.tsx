@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import IncompleteMessage from "@/components/IncompleteMessage";
 import InputUnit from "@/components/InputUnit";
 import ChooseUnit from "@/components/ChooseUnit";
@@ -9,8 +9,11 @@ import Lottie from "lottie-react";
 import Timer from "@/components/Timer";
 import ChooseMultipleUnit from "@/components/ChooseMultipleUnit";
 import UnitComplete from "@/components/UnitComplete";
+import { unitTimers } from "@/context";
+import Navbar from "@/components/Navbar";
 
 export default function Unit() {
+  const { pathname } = useLocation();
   const { gradeName, subjectName, subjectId, unitId, unitName } = useParams();
 
   const [data, setData] = useState<any>();
@@ -25,7 +28,11 @@ export default function Unit() {
   const [isUniteComplete, setIsUniteComplete] = useState<boolean>(false);
   const [totalTime, setTotalTime] = useState<string>("");
 
+  const { start, timer } = unitTimers();
+
   useEffect(() => {
+    const regexExp =
+      /^\/[A-Za-z0-9%]+\/[A-Za-z]+\/[A-Fa-f0-9]+\/[A-Fa-f0-9]+\/[A-Za-z0-9%]+$/;
     (async () => {
       const { data } = await axios.post(`/getUnit`, {
         gradeName,
@@ -34,9 +41,14 @@ export default function Unit() {
         unitId,
         unitName,
       });
-      setData(data);
+      setData(data.data);
+      if (regexExp.test(pathname)) {
+        start();
+        timer.startTime = Date.now();
+        timer.playedSubUnitsId = data.playedId;
+      }
     })();
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (isCorrectAns) {
@@ -76,92 +88,98 @@ export default function Unit() {
   ];
 
   return (
-    <section className="relative w-full min-h-screen flex justify-center items-center bg-skyBlue px-4">
-      {isIncomplete && <IncompleteMessage setIsIncomplete={setIsIncomplete} />}
-      <div
-        className={`relative w-full md:w-[90%] lg:w-[1024px] ${
-          isWrongAns ? "h-auto" : "lg:h-[550px] h-[700px]"
-        } bg-white rounded-lg px-6 py-4 my-4 flex items-center justify-center`}
-      >
-        {isUniteComplete ? (
-          <UnitComplete
-            unitName={data?.name}
-            setIsUniteComplete={setIsUniteComplete}
-            setQuestionAnswered={setQuestionAnswered}
-            setQuestionNumber={setQuestionNumber}
-            setScore={setScore}
-            setIsCorrectAns={setIsCorrectAns}
-            totalTime={totalTime}
-            gradeName={gradeName}
-            subjectName={subjectName}
-            subjectId={subjectId}
-          />
-        ) : (
-          <>
-            <Timer
-              questionAnswered={questionAnswered}
-              score={score}
-              setTotalTime={setTotalTime}
-            />
-            {/* Correct Answer Start */}
-            {!isWrongAns && (
-              <div
-                className={`absolute top-0 left-0 w-full lg:h-[550px] h-[700px] bg-white ${
-                  isCorrectAns ? "opacity-100" : "opacity-0"
-                } rounded-lg z-50 transition-all duration-500 pointer-events-none flex items-center justify-center`}
-              >
-                <div className="flex flex-col gap-3 items-center">
-                  <Lottie
-                    animationData={correctLottie}
-                    className="w-[140px] h-[140px]"
-                  />
-                  <h1 className="text-green-500 text-3xl font-semibold">
-                    {awardingWord}
-                  </h1>
-                </div>
-              </div>
-            )}
-            {/* Correct Answer End */}
+    <>
+      <Navbar />
 
-            {data.subUnits[questionNumber].type === "Input" && (
-              <InputUnit
-                data={data.subUnits[questionNumber]}
-                isWrongAns={isWrongAns}
-                setIsWrongAns={setIsWrongAns}
-                userAns={userAns}
-                setUserAns={setUserAns}
-                setIsIncomplete={setIsIncomplete}
-                setQuestionAnswered={setQuestionAnswered}
-                setScore={setScore}
-                setIsCorrectAns={setIsCorrectAns}
-              />
-            )}
-            {data.subUnits[questionNumber].type === "Choose One" && (
-              <ChooseUnit
-                data={data.subUnits[questionNumber]}
-                setIsIncomplete={setIsIncomplete}
-                IsWrongAns={isWrongAns}
-                setIsWrongAns={setIsWrongAns}
-                setIsCorrectAns={setIsCorrectAns}
-                setQuestionAnswered={setQuestionAnswered}
-                setScore={setScore}
-              />
-            )}
-            {data.subUnits[questionNumber].type === "Choose Multiple" && (
-              <ChooseMultipleUnit
-                data={data.subUnits[questionNumber]}
-                setIsIncomplete={setIsIncomplete}
-                IsWrongAns={isWrongAns}
-                setIsWrongAns={setIsWrongAns}
-                isCorrectAns={isCorrectAns}
-                setIsCorrectAns={setIsCorrectAns}
-                setQuestionAnswered={setQuestionAnswered}
-                setScore={setScore}
-              />
-            )}
-          </>
+      <section className="relative w-full min-h-screen flex justify-center items-center bg-skyBlue px-4">
+        {isIncomplete && (
+          <IncompleteMessage setIsIncomplete={setIsIncomplete} />
         )}
-      </div>
-    </section>
+        <div
+          className={`relative w-full md:w-[90%] lg:w-[1024px] ${
+            isWrongAns ? "h-auto" : "lg:h-[550px] h-[700px]"
+          } bg-white rounded-lg px-6 py-4 my-4 flex items-center justify-center`}
+        >
+          {isUniteComplete ? (
+            <UnitComplete
+              unitName={data?.name}
+              setIsUniteComplete={setIsUniteComplete}
+              setQuestionAnswered={setQuestionAnswered}
+              setQuestionNumber={setQuestionNumber}
+              setScore={setScore}
+              setIsCorrectAns={setIsCorrectAns}
+              totalTime={totalTime}
+              gradeName={gradeName}
+              subjectName={subjectName}
+              subjectId={subjectId}
+            />
+          ) : (
+            <>
+              <Timer
+                questionAnswered={questionAnswered}
+                score={score}
+                setTotalTime={setTotalTime}
+              />
+              {/* Correct Answer Start */}
+              {!isWrongAns && (
+                <div
+                  className={`absolute top-0 left-0 w-full lg:h-[550px] h-[700px] bg-white ${
+                    isCorrectAns ? "opacity-100" : "opacity-0"
+                  } rounded-lg z-50 transition-all duration-500 pointer-events-none flex items-center justify-center`}
+                >
+                  <div className="flex flex-col gap-3 items-center">
+                    <Lottie
+                      animationData={correctLottie}
+                      className="w-[140px] h-[140px]"
+                    />
+                    <h1 className="text-green-500 text-3xl font-semibold">
+                      {awardingWord}
+                    </h1>
+                  </div>
+                </div>
+              )}
+              {/* Correct Answer End */}
+
+              {data.subUnits[questionNumber].type === "Input" && (
+                <InputUnit
+                  data={data.subUnits[questionNumber]}
+                  isWrongAns={isWrongAns}
+                  setIsWrongAns={setIsWrongAns}
+                  userAns={userAns}
+                  setUserAns={setUserAns}
+                  setIsIncomplete={setIsIncomplete}
+                  setQuestionAnswered={setQuestionAnswered}
+                  setScore={setScore}
+                  setIsCorrectAns={setIsCorrectAns}
+                />
+              )}
+              {data.subUnits[questionNumber].type === "Choose One" && (
+                <ChooseUnit
+                  data={data.subUnits[questionNumber]}
+                  setIsIncomplete={setIsIncomplete}
+                  IsWrongAns={isWrongAns}
+                  setIsWrongAns={setIsWrongAns}
+                  setIsCorrectAns={setIsCorrectAns}
+                  setQuestionAnswered={setQuestionAnswered}
+                  setScore={setScore}
+                />
+              )}
+              {data.subUnits[questionNumber].type === "Choose Multiple" && (
+                <ChooseMultipleUnit
+                  data={data.subUnits[questionNumber]}
+                  setIsIncomplete={setIsIncomplete}
+                  IsWrongAns={isWrongAns}
+                  setIsWrongAns={setIsWrongAns}
+                  isCorrectAns={isCorrectAns}
+                  setIsCorrectAns={setIsCorrectAns}
+                  setQuestionAnswered={setQuestionAnswered}
+                  setScore={setScore}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </section>
+    </>
   );
 }

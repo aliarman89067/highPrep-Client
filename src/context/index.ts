@@ -42,3 +42,25 @@ export const useUser = create<User>()(
     }
   )
 );
+
+interface UnitTimers {
+  isStart: boolean;
+  start: () => void;
+  end: () => void;
+  timer: {
+    startTime: number;
+    endTime: number;
+    playedSubUnitsId: number | null;
+  };
+}
+
+export const unitTimers = create<UnitTimers>((set) => ({
+  isStart: false,
+  start: () => set(() => ({ isStart: true })),
+  end: () => set(() => ({ isStart: false })),
+  timer: {
+    startTime: 0,
+    endTime: 0,
+    playedSubUnitsId: null,
+  },
+}));
