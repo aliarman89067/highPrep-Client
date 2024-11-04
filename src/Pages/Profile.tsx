@@ -29,6 +29,7 @@ export default function Profile() {
       subjectId: string;
       unitId: string;
       unitName: string;
+      playedTime: string;
     }[];
   };
 
