@@ -1,5 +1,4 @@
 import Footer from "@/components/Footer";
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
 import icons from "@/constant/icons";
 import images from "@/constant/images";
