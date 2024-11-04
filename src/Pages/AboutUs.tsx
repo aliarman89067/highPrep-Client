@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import images from "@/constant/images";
 
@@ -11,7 +12,7 @@ export default function AboutUs() {
           backgroundSize: "cover",
           backgroundPosition: "0% 40%",
         }}
-        className="w-full h-full opacity-80 pt-5 pb-10 px-16"
+        className="w-full h-full opacity-80 pt-5 pb-10 px-16 min-h-screen"
       >
         <div className="px-6 py-4 rounded-lg bg-white/80 backdrop-blur-lg max-w-2xl mx-auto">
           <h1 className="text-gray-800 text-4xl font-bold text-center">
@@ -50,6 +51,7 @@ export default function AboutUs() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

@@ -14,6 +14,9 @@ import PaymentCancelled from "@/Pages/PaymentCancelled";
 import Profile from "@/Pages/Profile";
 import AboutUs from "@/Pages/AboutUs";
 import ContactUs from "@/Pages/ContactUs";
+import GradeByName from "@/Pages/GradeByName";
+import GradeBySubject from "@/Pages/GradeBySubject";
+import NewsRoom from "@/Pages/NewsRoom";
 
 export default function AppRoutes() {
   const { pathname } = useLocation();
@@ -105,6 +108,12 @@ export default function AppRoutes() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/grade-by-name/:gradeName" element={<GradeByName />} />
+        <Route
+          path="/grade-by-subject/:subjectName"
+          element={<GradeBySubject />}
+        />
+        <Route path="/newsroom" element={<NewsRoom />} />
       </Routes>
     </div>
   );

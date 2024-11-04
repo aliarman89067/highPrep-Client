@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import IsUserLogin from "@/components/IsUserLogin";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
@@ -27,7 +28,7 @@ export default function MemberShip() {
   return (
     <>
       <Navbar />
-      <MaxWidthWrapper>
+      <MaxWidthWrapper classNames="min-h-[calc(100vh-100px)] flex items-center justify-center">
         <div className="flex justify-center gap-6 flex-wrap mt-14">
           {membershipData.map((item) => (
             <div
@@ -59,6 +60,7 @@ export default function MemberShip() {
           ))}
         </div>
       </MaxWidthWrapper>
+      <Footer />
     </>
   );
 }

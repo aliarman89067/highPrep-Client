@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import images from "@/constant/images";
 import { Facebook, Mail, Phone, Twitter } from "lucide-react";
@@ -40,28 +41,31 @@ export default function ContactUs() {
             <h3 className="text-4xl font-semibold text-primary">Contact us</h3>
           </div>
         </div>
-        <div className="max-w-3xl grid grid-cols-1 md:grid-cols-2 mx-auto gap-6 my-5">
-          {contactData.map((item) => (
-            <div className="flex gap-3">
-              <div className="w-14 h-14 rounded-full bg-green-300 text-white flex items-center justify-center">
-                {item.icon}
+        <div className="min-h-[calc(100vh-140px)] flex items-center justify-center">
+          <div className="max-w-3xl grid grid-cols-1 md:grid-cols-2 mx-auto gap-6 my-5">
+            {contactData.map((item) => (
+              <div className="flex gap-3">
+                <div className="w-14 h-14 rounded-full bg-green-300 text-white flex items-center justify-center">
+                  {item.icon}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-xl font-bold text-darkGreen">
+                    {item.heading}
+                  </h3>
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    className="underline text-blue"
+                  >
+                    {item.link}
+                  </a>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <h3 className="text-xl font-bold text-darkGreen">
-                  {item.heading}
-                </h3>
-                <a
-                  href={item.link}
-                  target="_blank"
-                  className="underline text-blue"
-                >
-                  {item.link}
-                </a>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

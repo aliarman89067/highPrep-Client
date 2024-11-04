@@ -39,7 +39,7 @@ export default function Chapters() {
   // };
   const colors = ["#0B863C", "#EABC00", "#7027A5", "#C83131"];
   return (
-    <MaxWidthWrapper classNames=" flex flex-col mt-10 ">
+    <MaxWidthWrapper classNames=" flex flex-col mt-10 min-h-screen">
       <div className="flex flex-col gap-1 items-center justify-center">
         <div className="flex gap-2 items-center justify-center">
           <h1 className="text-darkGreen text-5xl font-bold font-poppins">

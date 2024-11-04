@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import IsUserLogin from "@/components/IsUserLogin";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
@@ -251,6 +252,7 @@ export default function Profile() {
           )}
         </MaxWidthWrapper>
       </div>
+      <Footer />
     </>
   );
 }

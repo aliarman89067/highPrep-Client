@@ -1,4 +1,5 @@
 import Chapters from "@/components/Chapters";
+import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 
@@ -8,6 +9,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Chapters />
+      <Footer />
     </section>
   );
 }
