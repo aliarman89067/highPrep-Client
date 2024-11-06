@@ -58,7 +58,9 @@ export default function Career() {
     }
   };
 
-  const handleSubmit = (values: CareerSchema) => {};
+  const handleSubmit = (values: CareerSchema) => {
+    console.log(values);
+  };
 
   const handlePdfUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
