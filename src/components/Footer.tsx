@@ -2,8 +2,14 @@ import MaxWidthWrapper from "./MaxWidthWrapper";
 import icons from "@/constant/icons";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
+import { useLoginModal } from "../context/index";
+import IsUserLogin from "./IsUserLogin";
 
 export default function Footer() {
+  // Hooks
+  const { openModal } = useLoginModal();
+  const { isUser } = IsUserLogin();
+
   const data = [
     {
       heading: "What we offer",
@@ -31,7 +37,7 @@ export default function Footer() {
       links: [
         { name: "About Us", href: "/aboutus" },
         { name: "Contact Us", href: "/contactus" },
-        { name: "Careers", href: "/href" },
+        { name: "Careers", href: "/career" },
         { name: "Newsroom", href: "/newsroom" },
       ],
     },
@@ -62,7 +68,11 @@ export default function Footer() {
               tracking, HIGH SCHOOL PREP meets your unique learning needs to
               help you succeed!
             </p>
-            <Button className="w-fit">Join now</Button>
+            {!isUser && (
+              <Button onClick={openModal} className="w-fit">
+                Join now
+              </Button>
+            )}
           </div>
           {/* LINKS PART */}
           <div className="w-full flex flex-wrap justify-between">
