@@ -24,6 +24,9 @@ export default function Career() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pfdLoading, setPfdLoading] = useState<boolean>(false);
 
+  //  TODO: Removes when make real api
+  setIsLoading(false);
+
   const careerSchema = z.object({
     firstName: z.string().min(1, { message: "First Name is required" }),
     lastName: z.string().min(1, { message: "Last Name is required" }),
