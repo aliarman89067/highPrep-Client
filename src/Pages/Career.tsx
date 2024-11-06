@@ -21,11 +21,11 @@ import { z } from "zod";
 
 export default function Career() {
   // Hooks
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  //   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pfdLoading, setPfdLoading] = useState<boolean>(false);
 
   //  TODO: Removes when make real api
-  setIsLoading(false);
+  //   setIsLoading(false);
 
   const careerSchema = z.object({
     firstName: z.string().min(1, { message: "First Name is required" }),
@@ -101,7 +101,7 @@ export default function Career() {
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isLoading}
+                      //   disabled={isLoading}
                       {...field}
                       className="border-gray-300"
                     />
@@ -118,7 +118,7 @@ export default function Career() {
                   <FormLabel>Last Name</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isLoading}
+                      //   disabled={isLoading}
                       {...field}
                       className="border-gray-300"
                     />
@@ -135,7 +135,7 @@ export default function Career() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isLoading}
+                      //   disabled={isLoading}
                       {...field}
                       className="border-gray-300"
                     />
@@ -152,7 +152,7 @@ export default function Career() {
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isLoading}
+                      //   disabled={isLoading}
                       {...field}
                       className="border-gray-300"
                     />
@@ -169,7 +169,7 @@ export default function Career() {
                   <FormLabel>Location (City)</FormLabel>
                   <FormControl>
                     <Input
-                      disabled={isLoading}
+                      //   disabled={isLoading}
                       {...field}
                       className="border-gray-300"
                     />
@@ -192,7 +192,7 @@ export default function Career() {
                   </FormLabel>
                   <br />
                   <select
-                    disabled={isLoading}
+                    // disabled={isLoading}
                     className="w-[180px] px-2 py-2 rounded-md border border-gray-300"
                     onChange={(e) => handleSetPosition(e.target.value)}
                     value={field.value || ""}
@@ -225,7 +225,7 @@ export default function Career() {
                               Change PDF
                             </span>
                             <Input
-                              disabled={isLoading}
+                              //   disabled={isLoading}
                               type="file"
                               accept=".pdf"
                               onChange={handlePdfUpload}
@@ -235,7 +235,7 @@ export default function Career() {
                         </div>
                       ) : (
                         <Input
-                          disabled={isLoading}
+                          //   disabled={isLoading}
                           type="file"
                           accept=".pdf"
                           onChange={handlePdfUpload}
