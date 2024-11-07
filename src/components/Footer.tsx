@@ -85,6 +85,7 @@ export default function Footer() {
                   {item.links.map((link, index) => (
                     <Link
                       key={index}
+                      onClick={() => window.scrollTo(0, 0)}
                       to={link.href}
                       className="text-sm text-gray-600 hover:underline"
                     >

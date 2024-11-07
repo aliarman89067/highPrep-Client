@@ -10,6 +10,7 @@ import sliderAwards from "../assets/images/sliderAwards.jpg";
 import sliderPerformance from "../assets/images/sliderPerformance.jpg";
 import sliderStudents from "../assets/images/sliderStudents.jpg";
 import sliderTeam from "../assets/images/sliderTeam.jpg";
+import messageSendCartoon from "../assets/images/messageSendCartoon-01.png";
 
 export default {
   heroImage,
@@ -24,4 +25,5 @@ export default {
   sliderPerformance,
   sliderStudents,
   sliderTeam,
+  messageSendCartoon,
 };

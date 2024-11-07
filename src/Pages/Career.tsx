@@ -11,21 +11,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import images from "@/constant/images";
 import { app } from "@/firebase";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { Check } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export default function Career() {
   // Hooks
-  //   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pfdLoading, setPfdLoading] = useState<boolean>(false);
-
-  //  TODO: Removes when make real api
-  //   setIsLoading(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const careerSchema = z.object({
     firstName: z.string().min(1, { message: "First Name is required" }),
@@ -58,9 +59,32 @@ export default function Career() {
     }
   };
 
-  const handleSubmit = (values: CareerSchema) => {
-    console.log(values);
+  const handleSubmit = async (values: CareerSchema) => {
+    try {
+      setIsLoading(true);
+
+      const payloadData = { ...values, position: values.option };
+
+      await axios.post("/create-career-form", {
+        ...payloadData,
+      });
+      setIsSubmitted(true);
+      toast.success("Your form submitted successfully");
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setIsSubmitted(false);
+    }, 3000);
+
+    return () => clearTimeout(timeOut);
+  }, [isSubmitted]);
 
   const handlePdfUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -84,174 +108,190 @@ export default function Career() {
   return (
     <>
       <Navbar />
-      <MaxWidthWrapper classNames="min-h-screen py-10 my-5 px-5 bg-gray-100 rounded-lg">
-        <h1 className="text-xl font-bold text-primary capitalize">
-          Apply to high school prep
-        </h1>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="max-w-xl mt-5 space-y-3"
-          >
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      //   disabled={isLoading}
-                      {...field}
-                      className="border-gray-300"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+      {isSubmitted ? (
+        <MaxWidthWrapper classNames="h-[calc(100vh-100px)] py-10 my-5 px-5 bg-gray-100 rounded-lg flex item-center justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <img
+              src={images.messageSendCartoon}
+              alt="Send Image"
+              className="w-[400px] object-contain"
             />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      //   disabled={isLoading}
-                      {...field}
-                      className="border-gray-300"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      //   disabled={isLoading}
-                      {...field}
-                      className="border-gray-300"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input
-                      //   disabled={isLoading}
-                      {...field}
-                      className="border-gray-300"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location (City)</FormLabel>
-                  <FormControl>
-                    <Input
-                      //   disabled={isLoading}
-                      {...field}
-                      className="border-gray-300"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="option"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Positions
-                    <br />
-                    <span className="text-sm font-normal text-gray-500">
-                      Select the position you want to apply
-                    </span>
-                  </FormLabel>
-                  <br />
-                  <select
-                    // disabled={isLoading}
-                    className="w-[180px] px-2 py-2 rounded-md border border-gray-300"
-                    onChange={(e) => handleSetPosition(e.target.value)}
-                    value={field.value || ""}
-                  >
-                    <option value="none">Select Position</option>
-                    <option value="Web Developer">Web Developer</option>
-                    <option value="App Developer">App Developer</option>
-                  </select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="resume"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Resume/CV</FormLabel>
-                  {pfdLoading ? (
-                    <p className="text-base text-gray-600">Uploading...</p>
-                  ) : (
+            <h3 className="text-gray-800 text-lg font-semibold mt-2">
+              Your form is submitted
+            </h3>
+            <p className="text-gray-600 text-sm">We&apos;ll get it soon</p>
+          </div>
+        </MaxWidthWrapper>
+      ) : (
+        <MaxWidthWrapper classNames="min-h-screen py-10 my-5 px-5 bg-gray-100 rounded-lg">
+          <h1 className="text-xl font-bold text-primary capitalize">
+            Apply to high school prep
+          </h1>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="max-w-xl mt-5 space-y-3"
+            >
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      {form.getValues("resume") ? (
-                        <div className="flex items-center gap-3">
-                          <p className="text-base text-gray-800 flex items-center gap-1">
-                            PDF selected <Check />
-                          </p>
-                          <label>
-                            <span className="rounded-md flex items-center justify-center border border-gray-300 bg-gray-100 text-gray-800 text-base px-3 py-1 cursor-pointer hover:bg-gray-200 transition-all">
-                              Change PDF
-                            </span>
-                            <Input
-                              //   disabled={isLoading}
-                              type="file"
-                              accept=".pdf"
-                              onChange={handlePdfUpload}
-                              className="border-gray-300 hidden"
-                            />
-                          </label>
-                        </div>
-                      ) : (
-                        <Input
-                          //   disabled={isLoading}
-                          type="file"
-                          accept=".pdf"
-                          onChange={handlePdfUpload}
-                          className="border-gray-300"
-                        />
-                      )}
+                      <Input
+                        disabled={isLoading}
+                        {...field}
+                        className="border-gray-300"
+                      />
                     </FormControl>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button>Submit</Button>
-          </form>
-        </Form>
-      </MaxWidthWrapper>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        {...field}
+                        className="border-gray-300"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        {...field}
+                        className="border-gray-300"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        {...field}
+                        className="border-gray-300"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Location (City)</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        {...field}
+                        className="border-gray-300"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="option"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Positions
+                      <br />
+                      <span className="text-sm font-normal text-gray-500">
+                        Select the position you want to apply
+                      </span>
+                    </FormLabel>
+                    <br />
+                    <select
+                      disabled={isLoading}
+                      className="w-[180px] px-2 py-2 rounded-md border border-gray-300"
+                      onChange={(e) => handleSetPosition(e.target.value)}
+                      value={field.value || ""}
+                    >
+                      <option value="none">Select Position</option>
+                      <option value="Web Developer">Web Developer</option>
+                      <option value="App Developer">App Developer</option>
+                    </select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="resume"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Resume/CV</FormLabel>
+                    {pfdLoading ? (
+                      <p className="text-base text-gray-600">Uploading...</p>
+                    ) : (
+                      <FormControl>
+                        {form.getValues("resume") ? (
+                          <div className="flex items-center gap-3">
+                            <p className="text-base text-gray-800 flex items-center gap-1">
+                              PDF selected <Check />
+                            </p>
+                            <label>
+                              <span className="rounded-md flex items-center justify-center border border-gray-300 bg-gray-100 text-gray-800 text-base px-3 py-1 cursor-pointer hover:bg-gray-200 transition-all">
+                                Change PDF
+                              </span>
+                              <Input
+                                disabled={isLoading}
+                                type="file"
+                                accept=".pdf"
+                                onChange={handlePdfUpload}
+                                className="border-gray-300 hidden"
+                              />
+                            </label>
+                          </div>
+                        ) : (
+                          <Input
+                            disabled={isLoading}
+                            type="file"
+                            accept=".pdf"
+                            onChange={handlePdfUpload}
+                            className="border-gray-300"
+                          />
+                        )}
+                      </FormControl>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button>Submit</Button>
+            </form>
+          </Form>
+        </MaxWidthWrapper>
+      )}
       <Footer />
     </>
   );
