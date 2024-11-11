@@ -11,6 +11,7 @@ interface User {
   name: string;
   email: string;
   image: string;
+  isPremium: boolean;
   setUser: (values: Partial<User>) => void;
 }
 
@@ -33,6 +34,7 @@ export const useUser = create<User>()(
       name: "",
       email: "",
       image: "",
+      isPremium: false,
       setUser: (values: Partial<User>) =>
         set((state) => ({ ...state, ...values })),
     }),
@@ -63,4 +65,14 @@ export const unitTimers = create<UnitTimers>((set) => ({
     endTime: 0,
     playedSubUnitsId: null,
   },
+}));
+
+interface UseOnWebLoad {
+  isLoad: boolean;
+  setLoadTrue: () => void;
+}
+
+export const useOnWebLoad = create<UseOnWebLoad>((set) => ({
+  isLoad: false,
+  setLoadTrue: () => set(() => ({ isLoad: true })),
 }));

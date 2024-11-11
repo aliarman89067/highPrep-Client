@@ -13,6 +13,7 @@ import { handleGoogleAuth } from "@/lib/utils";
 
 export default function LoginForm() {
   // Hooks
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { closeModal: closeLoginModal } = useLoginModal();
   const { openModal: OpenSignupModal, closeModal: closeSignupModal } =
     useSignupModal();
@@ -36,21 +37,38 @@ export default function LoginForm() {
   });
 
   const handleSubmit = async (values: LoginSchema) => {
-    const { data } = await axios.post("/get-user", { ...values });
+    try {
+      setIsLoading(true);
+      const { data } = await axios.post("/get-user", { ...values });
 
-    if (data.success === false) {
-      if (data.message === "Email or password is wrong") {
-        setCustomError("Email or password is wrong");
-      } else {
-        setCustomError("Something went wrong try again");
+      if (data.success === false) {
+        if (data.message === "Email or password is wrong") {
+          setCustomError("Email or password is wrong");
+        } else {
+          setCustomError("Something went wrong try again");
+        }
       }
-    }
-    if (data.success === true) {
-      setUser(data.data);
-      closeLoginModal();
+      if (data.success === true) {
+        console.log(data.data);
+
+        setUser(data.data);
+        closeLoginModal();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
-
+  const handleGoogle = () => {
+    if (isLoading) return;
+    handleGoogleAuth({
+      setCustomError,
+      setUser,
+      closeLoginModal,
+      closeSignupModal,
+    });
+  };
   return (
     <div className="w-full h-full bg-white rounded-lg relative">
       {/* Close Button */}
@@ -107,7 +125,7 @@ export default function LoginForm() {
             {customError && (
               <p className="text-red-500 text-sm">{customError}</p>
             )}
-            <Button type="submit" className="w-full mt-3">
+            <Button disabled={isLoading} type="submit" className="w-full mt-3">
               Login
             </Button>
           </form>
@@ -116,6 +134,7 @@ export default function LoginForm() {
           Don&apos;t have an account?{" "}
           <span
             onClick={() => {
+              if (isLoading) return;
               closeLoginModal();
               form.reset();
               OpenSignupModal();
@@ -126,14 +145,7 @@ export default function LoginForm() {
           </span>
         </p>
         <div
-          onClick={() =>
-            handleGoogleAuth({
-              setCustomError,
-              setUser,
-              closeLoginModal,
-              closeSignupModal,
-            })
-          }
+          onClick={handleGoogle}
           className="cursor-pointer w-full h-12 rounded-md border border-gray-400 flex items-center justify-center mt-3 gap-2 hover:bg-gray-100 hover:shadow-lg transition-all"
         >
           <h3 className="text-base font-semibold text-gray-800">

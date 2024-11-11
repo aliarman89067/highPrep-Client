@@ -42,8 +42,9 @@ export default function ProfileSideBar({ tabs, setTabs }: Props) {
       </SheetTrigger>
       <SheetContent side={"left"} className="w-[220px] p-0 pt-12">
         <div className="flex flex-col gap-2 w-full px-2 mt-5">
-          {tabsData.map((tab) => (
+          {tabsData.map((tab, index) => (
             <div
+              key={index}
               onClick={() => changeTab(tab.label as "user-info" | "history")}
               className={`flex items-center gap-2 ${
                 tab.label === tabs

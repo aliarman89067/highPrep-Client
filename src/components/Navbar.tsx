@@ -14,6 +14,7 @@ export default function Navbar() {
     name: userName,
     email: userEmail,
     image: userImage,
+    isPremium,
   } = useUser();
 
   const { openModal } = useLoginModal();
@@ -48,13 +49,15 @@ export default function Navbar() {
             ))}
           </div>
           <div className="flex items-center justify-end space-x-3 lg:space-x-5 md:w-[260px]">
-            <Button
-              onClick={() => navigate("/membership")}
-              variant="outline"
-              className="hover:bg-darkGreen hover:text-white text-gray-800"
-            >
-              Membership
-            </Button>
+            {!isPremium && (
+              <Button
+                onClick={() => navigate("/membership")}
+                variant="outline"
+                className="hover:bg-darkGreen hover:text-white text-gray-800"
+              >
+                Membership
+              </Button>
+            )}
             <div className="flex gap-1 items-center">
               {userId && userEmail ? (
                 <NavbarDropdown userImage={userImage} userName={userName} />

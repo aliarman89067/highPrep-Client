@@ -81,16 +81,16 @@ export default function Footer() {
                 <h3 className="text-darkGreen text-lg font-semibold">
                   {item.heading}
                 </h3>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 cursor-pointer">
                   {item.links.map((link, index) => (
-                    <Link
+                    <span
                       key={index}
-                      onClick={() => window.scrollTo(0, 0)}
-                      to={link.href}
+                      // onClick={() => window.scrollTo(0, 0)}
+                      // to={link.href}
                       className="text-sm text-gray-600 hover:underline"
                     >
                       {link.name}
-                    </Link>
+                    </span>
                   ))}
                 </div>
               </div>

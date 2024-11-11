@@ -11,6 +11,9 @@ import sliderPerformance from "../assets/images/sliderPerformance.jpg";
 import sliderStudents from "../assets/images/sliderStudents.jpg";
 import sliderTeam from "../assets/images/sliderTeam.jpg";
 import messageSendCartoon from "../assets/images/messageSendCartoon-01.png";
+import success from "../assets/images/success.png";
+import successBg from "../assets/images/success-bg.jpg";
+import successSvg from "../assets/images/success-svg.svg";
 
 export default {
   heroImage,
@@ -26,4 +29,7 @@ export default {
   sliderStudents,
   sliderTeam,
   messageSendCartoon,
+  success,
+  successBg,
+  successSvg,
 };

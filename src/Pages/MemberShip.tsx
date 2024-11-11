@@ -5,10 +5,12 @@ import Navbar from "@/components/Navbar";
 import { membershipData } from "@/constant/membershipData";
 import { useLoginModal } from "@/context";
 import axios from "axios";
+import { useState } from "react";
 
 export default function MemberShip() {
   const { openModal } = useLoginModal();
   const { isUser } = IsUserLogin();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleCheckout = async (packageName: string) => {
     if (!isUser) {
@@ -16,12 +18,15 @@ export default function MemberShip() {
       return;
     }
     try {
+      setIsLoading(true);
       const { data } = await axios.post("/create-checkout-session", {
         packageName,
       });
       window.location.href = data.url;
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,6 +55,7 @@ export default function MemberShip() {
               </div>
               <div className="h-[1px] w-full rounded-[50px] bg-gray-200"></div>
               <button
+                disabled={isLoading}
                 onClick={() => handleCheckout(item.heading1)}
                 style={{ backgroundColor: item.color }}
                 className="w-full h-12 rounded-md border-none outline-none text-base text-white font-medium hover:opacity-90 transition-all hover:shadow-lg"

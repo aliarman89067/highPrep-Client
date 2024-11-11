@@ -109,7 +109,7 @@ export default function Career() {
     <>
       <Navbar />
       {isSubmitted ? (
-        <MaxWidthWrapper classNames="h-[calc(100vh-100px)] py-10 my-5 px-5 bg-gray-100 rounded-lg flex item-center justify-center">
+        <MaxWidthWrapper classNames="h-[calc(100vh-100px)] py-10 my-5 px-5 bg-gray-50 rounded-lg flex item-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <img
               src={images.messageSendCartoon}
@@ -123,7 +123,7 @@ export default function Career() {
           </div>
         </MaxWidthWrapper>
       ) : (
-        <MaxWidthWrapper classNames="min-h-screen py-10 my-5 px-5 bg-gray-100 rounded-lg">
+        <MaxWidthWrapper classNames="min-h-screen py-10 my-5 px-5 bg-gray-50 rounded-lg">
           <h1 className="text-xl font-bold text-primary capitalize">
             Apply to high school prep
           </h1>

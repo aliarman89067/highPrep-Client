@@ -1,203 +1,6 @@
 export const unitData = [
   {
     id: 1,
-    Math: [
-      {
-        unitName: "Integers",
-        lessons: [
-          "Understanding integers",
-          "Integers on number lines",
-          "Graph integers on horizontal and vertical number lines",
-          "Understanding absolute value",
-          "Absolute value and opposite integers",
-          "Quantities that combine to zero: word problems",
-          "Compare and order integers",
-          "Integer inequalities with absolute values",
-        ],
-      },
-      {
-        unitName: "Decimals",
-        lessons: [
-          "Decimal numbers review",
-          "Compare and order decimals",
-          "Round decimals",
-        ],
-      },
-    ],
-    "Language Arts": [
-      {
-        unitName: "Main idea",
-        lessons: ["Determine the main idea of a passage"],
-      },
-      {
-        unitName: "Theme",
-        lessons: [
-          "Match the quotations with their themes",
-          "Determine the themes of short stories",
-        ],
-      },
-    ],
-    Science: [
-      {
-        unitName: "Science practices and tools",
-        lessons: [
-          "The process of scientific inquiry",
-          "Identify laboratory tools",
-          "Laboratory safety equipment",
-        ],
-      },
-      {
-        unitName: "Designing experiments",
-        lessons: [
-          "Identify control and experimental groups",
-          "Identify independent and dependent variables",
-          "Identify the experimental question",
-          "Identify questions that can be investigated with a set of materials",
-          "Understand an experimental protocol about plant growth",
-          "Understand an experimental protocol about diffusion",
-          "Understand an experimental protocol about evaporation",
-        ],
-      },
-    ],
-    "Social Studies": [
-      {
-        unitName: "Read maps",
-        lessons: [
-          "Identify lines of latitude and longitude",
-          "Use lines of latitude and longitude",
-        ],
-      },
-      {
-        unitName: "Physical geography",
-        lessons: ["Oceans and continents"],
-      },
-      {
-        unitName: "The Americas: geography",
-        lessons: [
-          "Identify and select countries of Northern and Central America",
-          "Name countries of Northern and Central America",
-          "Identify and select countries of the Caribbean",
-          "Name countries of the Caribbean",
-          "Identify and select countries of South America",
-          "Name countries of South America",
-        ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    Math: [
-      {
-        unitName: "Integers",
-        lessons: [
-          "Compare and order integers",
-          "Integer addition and subtraction rules",
-          "Add and subtract integers using counters",
-          "Add and subtract integers",
-          "Add and subtract three or more integers",
-          "Add and subtract integers: word problems",
-          "Integer multiplication and division rules",
-          "Multiply and divide integers",
-          "Evaluate numerical expressions involving integers",
-        ],
-      },
-      {
-        unitName: "Rational numbers",
-        lessons: [
-          "Convert between repeating decimals and fractions",
-          "Convert between decimals and fractions or mixed numbers",
-          "Compare rational numbers",
-          "Put rational numbers in order",
-          "Reciprocals and multiplicative inverses",
-          "Add and subtract rational numbers",
-          "Add and subtract rational numbers: word problems",
-          "Apply addition and subtraction rules",
-          "Multiply and divide rational numbers",
-          "Multiply and divide rational numbers: word problems",
-          "Apply multiplication and division rules",
-          "Apply addition, subtraction, multiplication, and division rules",
-          "Evaluate numerical expressions involving rational numbers",
-          "Multi-step word problems",
-        ],
-      },
-    ],
-    "Language Arts": [
-      {
-        unitName: "Main idea",
-        lessons: ["Determine the main idea of a passage"],
-      },
-      {
-        unitName: "Theme",
-        lessons: [
-          "Match the quotations with their themes",
-          "Determine the themes of short stories",
-        ],
-      },
-      {
-        unitName: "Author's purpose and tone",
-        lessons: [
-          "Identify the author's purpose",
-          "Which sentence is more formal?",
-          "Compare passages for tone",
-        ],
-      },
-      {
-        unitName: "Author's perspective",
-        lessons: ["	Determine the author's point of view"],
-      },
-    ],
-    Science: [
-      {
-        unitName: "Science practices and tools",
-        lessons: [
-          "The process of scientific inquiry",
-          "Identify laboratory tools",
-          "Laboratory safety equipment",
-        ],
-      },
-      {
-        unitName: "Designing experiments",
-        lessons: [
-          "Identify control and experimental groups",
-          "Identify independent and dependent variables",
-          "Identify the experimental question",
-          "Identify questions that can be investigated with a set of materials",
-          "Understand an experimental protocol about plant growth",
-          "Understand an experimental protocol about diffusion",
-          "Understand an experimental protocol about evaporation",
-        ],
-      },
-    ],
-    "Social Studies": [
-      {
-        unitName: "Government",
-        lessons: [
-          "Purposes of government",
-          "The Legislative Branch",
-          "The Executive Branch",
-          "The Judicial Branch",
-          "Checks and balances",
-          "State and local government",
-          "Identify levels and branches of government",
-        ],
-      },
-      {
-        unitName: "The Constitution",
-        lessons: [
-          "The Constitution: structure and principles",
-          "The Constitution: amendments",
-          "The Constitution: interpretation",
-          "The Bill of Rights",
-        ],
-      },
-      {
-        unitName: "The legal system",
-        lessons: ["Laws and courts"],
-      },
-    ],
-  },
-  {
-    id: 3,
     "Algebra 1": [
       {
         unitName: "Numbers and operations",
@@ -215,21 +18,6 @@ export const unitData = [
           "Classify rational and irrational numbers",
           "Properties of operations on rational and irrational numbers",
           "Classify numbers",
-        ],
-      },
-      {
-        unitName: "	Expressions",
-        lessons: [
-          "Write variable expressions",
-          "Evaluate variable expressions involving integers",
-          "Evaluate variable expressions involving rational numbers",
-          "Evaluate rational expressions",
-          "Properties of addition and multiplication",
-          "Distributive property",
-          "Simplify linear expressions using properties",
-          "Sort factors of variable expressions",
-          "Simplify variable expressions involving like terms and the distributive property",
-          "Identify equivalent linear expressions",
         ],
       },
     ],
@@ -292,7 +80,7 @@ export const unitData = [
     ],
   },
   {
-    id: 4,
+    id: 2,
     Geometry: [
       {
         unitName: "Logic",
@@ -307,28 +95,8 @@ export const unitData = [
           "Truth values",
         ],
       },
-      {
-        unitName: "Points, lines, line segments, and planes",
-        lessons: [
-          "Lines, line segments, and rays",
-          "Properties of planes, lines, and points",
-          "Describe intersections in a plane",
-          "Lengths of segments on number lines",
-          "Additive property of length",
-          "Midpoints",
-          "Congruent line segments",
-          "Construct a congruent segment",
-          "Perpendicular Bisector Theorem",
-          "Midpoint formula: find the midpoint",
-          "Partition a line segment in a given ratio",
-          "Midpoint formula: find the endpoint",
-          "Distance formula",
-          "Distance to the origin in three dimensions",
-          "Construct the midpoint or perpendicular bisector of a segment",
-        ],
-      },
     ],
-    "Language Arts": [
+    "Language arts": [
       {
         unitName: "Main idea",
         lessons: ["Determine the main idea of a passage"],
@@ -351,6 +119,146 @@ export const unitData = [
           "Interpret figures of speech",
           "Classify figures of speech: euphemism, hyperbole, oxymoron, paradox",
           "Classify figures of speech: review",
+          "Analyze the effects of figures of speech on meaning and tone",
+        ],
+      },
+    ],
+  },
+  {
+    id: 3,
+    "Algebra 2": [
+      {
+        unitName: "Function concepts",
+        lessons: [
+          "Domain and range",
+          "Identify functions",
+          "Evaluate functions",
+          "Find values using function graphs",
+          "Complete a table for a function graph",
+          "Identify graphs: word problems",
+          "Find solutions using a table",
+          "Approximate solutions using a table",
+          "	Average rate of change",
+        ],
+      },
+    ],
+    "Language arts": [
+      {
+        unitName: "Main idea",
+        lessons: ["Determine the main idea of a passage"],
+      },
+      {
+        unitName: "Audience, purpose, and tone",
+        lessons: [
+          "Which text is most formal?",
+          "Compare passages for subjective and objective tone",
+          "Identify audience and purpose",
+          "Compare passages for tone",
+        ],
+      },
+      {
+        unitName: "Literary devices",
+        lessons: [
+          "Identify the narrative point of view",
+          "Interpret the meaning of an allusion from its source",
+          "Recall the source of an allusion",
+          "Interpret figures of speech",
+          "Classify figures of speech: euphemism, hyperbole, oxymoron, paradox",
+          "Classify figures of speech: review",
+          "Analyze the effects of figures of speech on meaning and tone",
+        ],
+      },
+    ],
+    "Civics & government": [
+      {
+        unitName: "Principles and types of government",
+        lessons: ["Identify types of government"],
+      },
+      {
+        unitName: "Origins of U.S. government",
+        lessons: [
+          "Influences on U.S. government",
+          "Source analysis: the Declaration of Independence",
+          "	The Articles of Confederation",
+          "The Constitutional Convention",
+          "Source analysis: the Federalist Papers",
+        ],
+      },
+      {
+        unitName: "The Constitution",
+        lessons: [
+          "Introduction to the Constitution",
+          "Federalism",
+          "Constitutional amendments",
+          "The Bill of Rights",
+        ],
+      },
+    ],
+  },
+  {
+    id: 4,
+    Precalculus: [
+      {
+        unitName: "Function concepts",
+        lessons: [
+          "Domain and range",
+          "Identify functions",
+          "Evaluate functions",
+          "Find values using function graphs",
+          "Complete a table for a function graph",
+          "Identify graphs: word problems",
+          "Add, subtract, multiply, and divide functions",
+          "Composition of functions",
+        ],
+      },
+    ],
+    Calculus: [
+      {
+        unitName: "Introduction to limits",
+        lessons: [
+          "Find limits using graphs",
+          "Find one-sided limits using graphs",
+          "Determine if a limit exists",
+        ],
+      },
+      {
+        unitName: "Calculate limits",
+        lessons: [
+          "Find limits using addition, subtraction, and multiplication laws",
+          "Find limits using the division law",
+          "Find limits using power and root laws",
+          "Find limits using limit laws",
+          "Find limits of polynomials and rational functions",
+          "Find limits involving factorization and rationalization",
+          "Find limits involving absolute value functions",
+          "Find limits involving trigonometric functions",
+        ],
+      },
+    ],
+    "Language arts": [
+      {
+        unitName: "	Main idea",
+        lessons: ["	Determine the main idea of a passage"],
+      },
+      {
+        unitName: "Audience, purpose, and tone",
+        lessons: [
+          "Which text is most formal?",
+          "Compare passages for subjective and objective tone",
+          "Identify audience and purpose",
+          "Compare passages for tone",
+        ],
+      },
+      {
+        unitName: "Literary devices",
+        lessons: [
+          "Identify the narrative point of view",
+          "Interpret the meaning of an allusion from its source",
+          "Recall the source of an allusion",
+          "Interpret the figure of speech",
+          "Classify the figure of speech: euphemism, hyperbole, oxymoron, paradox",
+          "Classify the figure of speech: anaphora, antithesis, apostrophe, assonance, chiasmus, understatement",
+          "Classify the figure of speech: review",
           "Analyze the effects of figures of speech on meaning and tone",
         ],
       },

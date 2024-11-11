@@ -22,7 +22,7 @@ export default function NavbarDropdown({ userImage, userName }: Props) {
   // Other functions
   const logoutUser = async () => {
     await axios.delete("/logout-user");
-    setUser({ _id: "", name: "", email: "", image: "" });
+    setUser({ _id: "", name: "", email: "", image: "", isPremium: false });
     window.location.reload();
   };
   return (

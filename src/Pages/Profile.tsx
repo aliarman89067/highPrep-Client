@@ -144,8 +144,9 @@ export default function Profile() {
         {/* Side bar */}
         <div className="hidden md:block h-screen w-[220px] shadow-xl border-r border-gray-300 bg-gray-100">
           <div className="flex flex-col gap-2 w-full px-2 mt-5">
-            {tabsData.map((tab) => (
+            {tabsData.map((tab, index) => (
               <div
+                key={index}
                 onClick={() => changeTab(tab.label as "user-info" | "history")}
                 className={`flex items-center gap-2 ${
                   tab.label === tabs

@@ -15,6 +15,7 @@ import { handleGoogleAuth } from "@/lib/utils";
 
 export default function SignupForm() {
   // Hooks
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { closeModal: closeSignupModal } = useSignupModal();
   const { openModal: openLoginModal, closeModal: closeLoginModal } =
     useLoginModal();
@@ -65,18 +66,34 @@ export default function SignupForm() {
 
   const handleSubmit = async (values: SignupSchema) => {
     setCustomError("");
-    const { data } = await axios.post("/create-user", { ...values });
-    if (data.success === false) {
-      if (data.message === "This email already used") {
-        setCustomError("This email is already used");
-      } else {
-        setCustomError("Something went wrong try again");
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post("/create-user", { ...values });
+      if (data.success === false) {
+        if (data.message === "This email already used") {
+          setCustomError("This email is already used");
+        } else {
+          setCustomError("Something went wrong try again");
+        }
       }
+      if (data.success === true) {
+        setUser(data.data);
+        closeSignupModal();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-    if (data.success === true) {
-      setUser(data.data);
-      closeSignupModal();
-    }
+  };
+  const handleGoogle = () => {
+    if (imageLoading || isLoading) return;
+    handleGoogleAuth({
+      setCustomError,
+      setUser,
+      closeLoginModal,
+      closeSignupModal,
+    });
   };
 
   return (
@@ -178,6 +195,7 @@ export default function SignupForm() {
                             </>
                           )}
                           <Input
+                            disabled={imageLoading || isLoading}
                             type="file"
                             className="hidden"
                             accept="image/*"
@@ -197,7 +215,7 @@ export default function SignupForm() {
               <p className="text-red-500 text-sm">{customError}</p>
             )}
             <Button
-              disabled={imageLoading}
+              disabled={imageLoading || isLoading}
               type="submit"
               className="w-full mt-3"
             >
@@ -209,7 +227,7 @@ export default function SignupForm() {
           Already have an account?{" "}
           <span
             onClick={() => {
-              if (imageLoading) return;
+              if (imageLoading || isLoading) return;
               closeSignupModal();
               form.reset();
               openLoginModal();
@@ -220,14 +238,7 @@ export default function SignupForm() {
           </span>
         </p>
         <div
-          onClick={() =>
-            handleGoogleAuth({
-              setCustomError,
-              setUser,
-              closeLoginModal,
-              closeSignupModal,
-            })
-          }
+          onClick={handleGoogle}
           className="cursor-pointer w-full h-12 rounded-md border border-gray-400 flex items-center justify-center mt-3 gap-2 hover:bg-gray-100 hover:shadow-lg transition-all"
         >
           <h3 className="text-base font-semibold text-gray-800">
