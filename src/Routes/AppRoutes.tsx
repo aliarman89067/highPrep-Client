@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "../Pages/Home";
-import Subject from "@/Pages/Subject";
-import Unit from "@/Pages/Unit";
+// import Subject from "@/Pages/Subject";
+// import Unit from "@/Pages/Unit";
 // import SubjectTemp from "@/Pages/SubjectTemp";
 import { useLoginModal, useSignupModal, useUser } from "@/context";
 import { useEffect } from "react";

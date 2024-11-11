@@ -1,20 +1,20 @@
 import Lottie from "lottie-react";
 import book from "../assets/lottie/book.json";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { Clock } from "lucide-react";
 
-type Props = {
-  playedSubUnits:
-    | {
-        gradeName: string;
-        subjectName: string;
-        subjectId: string;
-        unitId: string;
-        unitName: string;
-        playedTime: string;
-      }[]
-    | undefined;
-};
+// type Props = {
+//   playedSubUnits:
+//     | {
+//         gradeName: string;
+//         subjectName: string;
+//         subjectId: string;
+//         unitId: string;
+//         unitName: string;
+//         playedTime: string;
+//       }[]
+//     | undefined;
+// };
 const dummyData = [
   {
     gradeName: "Tenth",
@@ -41,7 +41,8 @@ const dummyData = [
     playedTime: "00:00:53",
   },
 ];
-export default function UserHistory({ playedSubUnits }: Props) {
+// TODO: ADD Props Again
+export default function UserHistory() {
   return (
     <>
       {dummyData && dummyData.length > 0 ? (
@@ -55,7 +56,7 @@ export default function UserHistory({ playedSubUnits }: Props) {
                 <span
                   // to={`/${item.gradeName}/${item.subjectName}/${item.subjectId}/${item.unitId}/${item.unitName}`}
                   key={item.unitId}
-                  className="flex items-center gap-2 hover:underline cursor-pointer w-fit cursor-pointer"
+                  className="flex items-center gap-2 hover:underline cursor-pointer w-fit"
                 >
                   <span className="text-gray-900 text-base font-medium">
                     {index + 1}.

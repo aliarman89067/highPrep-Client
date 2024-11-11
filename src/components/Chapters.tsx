@@ -1,32 +1,32 @@
 import { Medal } from "lucide-react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { chapterData } from "@/constant/chapterData";
-import { useEffect, useState } from "react";
-import axios from "axios";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 import { unitData } from "@/constant/unitData";
 
 export default function Chapters() {
-  const [data, setData] = useState<any>([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data: gradesData } = await axios.get("/getGrades");
-        setData(gradesData);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+  // const [data, setData] = useState<any>([]);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const { data: gradesData } = await axios.get("/getGrades");
+  //       setData(gradesData);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+  // }, []);
 
-  const showUnitsLength = (chapters: any) => {
-    const totalUnits = chapters.reduce(
-      (total: any, acc: any) => total + acc.units.length,
-      0
-    );
+  // const showUnitsLength = (chapters: any) => {
+  //   const totalUnits = chapters.reduce(
+  //     (total: any, acc: any) => total + acc.units.length,
+  //     0
+  //   );
 
-    return totalUnits;
-  };
+  //   return totalUnits;
+  // };
   const handleLessonsCount = (gradeId: number, subjectName: string) => {
     const unit = unitData.find((unit) => unit.id === gradeId);
 

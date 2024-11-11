@@ -1,7 +1,4 @@
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Navbar from "@/components/Navbar";
-import correct from "../assets/lottie/correct.json";
-import Lottie from "lottie-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context";
