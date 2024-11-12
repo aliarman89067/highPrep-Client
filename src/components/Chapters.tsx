@@ -65,7 +65,7 @@ export default function Chapters() {
                   style={{ backgroundColor: colors[index] }}
                   className={`w-12 h-10 rounded-tr-full rounded-br-full rounded-tl-sm rounded-bl-sm flex items-center justify-center text-white font-semibold text-lg`}
                 >
-                  {/* {grade.gradeNumber} */}7
+                  {grade.gradeNumber}
                 </div>
                 <h1
                   style={{ color: colors[index] }}
