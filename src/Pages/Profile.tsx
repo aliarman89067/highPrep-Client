@@ -248,7 +248,9 @@ export default function Profile() {
           {tabs === "history" && (
             <>
               {/* User Info End */}
-              <UserHistory playedSubUnits={data?.playedSubUnits} />
+              {/* TODO: ADD THIS BOTTOM PROP AGAIN */}
+              {/* playedSubUnits={data?.playedSubUnits} */}
+              <UserHistory />
             </>
           )}
         </MaxWidthWrapper>
