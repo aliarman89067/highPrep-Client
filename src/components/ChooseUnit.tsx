@@ -316,7 +316,7 @@ export default function ChooseUnit({
                   // @ts-ignore
                   el.style.opacity = "100%";
                   // @ts-ignore
-                  el.style.backgroundColor = "#ade8f4";
+                  el.style.backgroundColor = "#9ef01a";
                   // @ts-ignore
                   el.style.scale = "107%";
                 } else {
@@ -348,7 +348,7 @@ export default function ChooseUnit({
               // @ts-ignore
               el.style.opacity = "100%";
               // @ts-ignore
-              el.style.backgroundColor = "#ade8f4";
+              el.style.backgroundColor = "#ff758f";
               // @ts-ignore
               el.style.scale = "107%";
             } else {
@@ -379,18 +379,22 @@ export default function ChooseUnit({
     setIsWrongAns(false);
     setTargetId(null);
   };
+  console.log(data?.questionHeight);
 
   return (
     <>
       {IsWrongAns ? (
         <div className="flex flex-col gap-8 mt-5 w-full">
           {/* Correct Answer */}
-          <div className="relative flex flex-col gap-3 w-[700px]">
+          <div className="relative flex flex-col gap-3 w-[700px]  min-h-[380px]">
             <h1 className="text-4xl font-semibold text-blue">
               Sorry, incorrect...
             </h1>
             <p className="text-darkGreen text-base">The correct answer is:</p>
-            <div className="flex items-center">
+            <div
+              style={{ height: `${data?.questionHeight}px` }}
+              className="flex items-center relative"
+            >
               <div
                 className=""
                 dangerouslySetInnerHTML={{

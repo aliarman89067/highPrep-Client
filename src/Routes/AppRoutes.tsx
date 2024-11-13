@@ -1,8 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "../Pages/Home";
-// import Subject from "@/Pages/Subject";
-// import Unit from "@/Pages/Unit";
-// import SubjectTemp from "@/Pages/SubjectTemp";
+import Subject from "@/Pages/Subject";
+import Unit from "@/Pages/Unit";
 import { useLoginModal, useSignupModal, useUser } from "@/context";
 import { useEffect } from "react";
 import LoginForm from "@/components/LoginForm";
@@ -18,7 +17,6 @@ import GradeByName from "@/Pages/GradeByName";
 import GradeBySubject from "@/Pages/GradeBySubject";
 import NewsRoom from "@/Pages/NewsRoom";
 import Career from "@/Pages/Career";
-import SubjectTemp from "@/Pages/SubjectTemp";
 
 export default function AppRoutes() {
   const { pathname } = useLocation();
@@ -91,18 +89,14 @@ export default function AppRoutes() {
       {/* Register Modal End */}
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route
+        <Route
           path="/:gradeName/:subjectName/:subjectId"
           element={<Subject />}
-        /> */}
-        <Route
-          path="/:gradeName/:subjectName/:gradeId"
-          element={<SubjectTemp />}
         />
-        {/* <Route
+        <Route
           path="/:gradeName/:subjectName/:subjectId/:unitId/:unitName"
           element={<Unit />}
-        /> */}
+        />
         <Route path="/membership" element={<MemberShip />} />
         <Route path="/payment-completed" element={<PaymentCompleted />} />
         <Route path="/payment-cancelled" element={<PaymentCancelled />} />
