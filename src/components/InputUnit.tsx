@@ -166,15 +166,21 @@ export default function InputUnit({
       div.style.position = "relative";
 
       let offsetValue = 0;
+      let scrollHeight = 0;
+
       if (el.tagName === "SPAN") {
         document.body.appendChild(el);
         offsetValue = el.getBoundingClientRect().height;
+        scrollHeight = el.scrollHeight;
         document.body.removeChild(el);
       } else {
         div.appendChild(el);
       }
       if (offsetValue > 0) {
-        if (offsetValue > 30) {
+        if (offsetValue > 30 && el.tagName === "SPAN") {
+          console.log(el);
+          console.log(scrollHeight);
+
           increaseHeight += offsetValue;
           div.style.height = offsetValue + "px";
         }
@@ -246,6 +252,7 @@ export default function InputUnit({
     }
     setQuestionAnswered((prev) => prev + 1);
   };
+  console.log(data?._id);
 
   return (
     <>
@@ -258,7 +265,10 @@ export default function InputUnit({
             </h1>
             <p className="text-darkGreen text-base">The correct answer is:</p>
             <div style={{ height: data?.questionHeight }} className="relative">
-              <div dangerouslySetInnerHTML={{ __html: data?.example }} />
+              <div
+                className="pointer-events-none select-none"
+                dangerouslySetInnerHTML={{ __html: data?.example }}
+              />
             </div>
             <Button
               onClick={() => setIsWrongAns(false)}
@@ -276,7 +286,7 @@ export default function InputUnit({
               style={{
                 height:
                   windowWidth > 800
-                    ? `${data?.reviewHeight}px`
+                    ? `300px`
                     : `${data?.reviewHeight + increaseHeight.review}px`,
               }}
               className={`relative border border-gray-400 rounded-md ${
@@ -306,7 +316,7 @@ export default function InputUnit({
                   {userAns.map((ans: string, index) => (
                     <div
                       key={index}
-                      className="px-5 py-3 border border-gray-500 bg-gray-100 flex items-center justify-center rounded-sm text-base"
+                      className="px-5 py-3 border border-gray-500 bg-red-300 flex items-center justify-center rounded-sm text-base"
                     >
                       {ans}
                     </div>
