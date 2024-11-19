@@ -379,7 +379,7 @@ export default function ChooseUnit({
     setIsWrongAns(false);
     setTargetId(null);
   };
-  console.log(data?.questionHeight);
+  console.log(data?._id);
 
   return (
     <>

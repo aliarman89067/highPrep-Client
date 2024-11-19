@@ -229,12 +229,11 @@ export default function InputUnit({
       setIsIncomplete(true);
       return;
     }
+
     for (const element of formElements) {
       for (const ans of data.correctAnswer) {
         if (Number(ans.id) === Number(element.id)) {
           if (ans.answer !== element.value.trim()) {
-            console.log(element.value.trim());
-
             finalAnswer = false;
             break;
           }
@@ -252,8 +251,7 @@ export default function InputUnit({
     }
     setQuestionAnswered((prev) => prev + 1);
   };
-  console.log(data?._id);
-
+  console.log(data._id);
   return (
     <>
       {isWrongAns ? (
@@ -286,7 +284,7 @@ export default function InputUnit({
               style={{
                 height:
                   windowWidth > 800
-                    ? `300px`
+                    ? `${data.reviewHeight}px`
                     : `${data?.reviewHeight + increaseHeight.review}px`,
               }}
               className={`relative border border-gray-400 rounded-md ${
@@ -299,7 +297,7 @@ export default function InputUnit({
                 className="absolute -left-3 top-5"
               />
               <div
-                className="relative"
+                className="relative pointer-events-none select-none"
                 dangerouslySetInnerHTML={{
                   __html: windowWidth > 800 ? data?.review : smallScreen.review,
                 }}
@@ -312,7 +310,7 @@ export default function InputUnit({
                 <h3 className="text-xl font-medium text-darkGreen">
                   You answered:
                 </h3>
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
                   {userAns.map((ans: string, index) => (
                     <div
                       key={index}
