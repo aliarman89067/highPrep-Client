@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import icons from "@/constant/icons";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   data: any;
@@ -24,7 +25,7 @@ export default function ChooseUnit({
   const [targetId, setTargetId] = useState<null | number>(null);
   const [htmlDataCorrect, setHtmlDataCorrect] = useState<string>("");
   const [htmlDataWrong, setHtmlDataWrong] = useState<string>("");
-
+  const [isPageLoaded, setisPageLoaded] = useState<boolean>(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [increaseHeight, setIncreaseHeight] = useState({
     question: 0,
@@ -83,7 +84,9 @@ export default function ChooseUnit({
         }
       }
       if (offsetValue > 0) {
-        div.style.height = offsetValue + "px";
+        if (offsetValue > 30) {
+          div.style.height = offsetValue + "px";
+        }
         div.appendChild(el);
       }
 
@@ -124,8 +127,10 @@ export default function ChooseUnit({
         div.appendChild(el);
       }
       if (offsetValue > 0) {
-        increaseHeight += offsetValue;
-        div.style.height = offsetValue + "px";
+        if (offsetValue > 30) {
+          div.style.height = offsetValue + "px";
+          increaseHeight += offsetValue;
+        }
         div.appendChild(el);
       }
 
@@ -167,8 +172,10 @@ export default function ChooseUnit({
         div.appendChild(el);
       }
       if (offsetValue > 0) {
-        increaseHeight += offsetValue;
-        div.style.height = offsetValue + "px";
+        if (offsetValue > 30 && el.tagName === "SPAN") {
+          increaseHeight += offsetValue;
+          div.style.height = offsetValue + "px";
+        }
         div.appendChild(el);
       }
 
@@ -181,7 +188,9 @@ export default function ChooseUnit({
   const changeCorrectData = () => {
     const div = document.createElement("div");
     div.innerHTML = htmlDataCorrect;
+
     const elements = Array.from(div.querySelectorAll("*"));
+
     const newElements = elements.filter((el) => {
       // @ts-ignore
       const topValue = el.style?.top;
@@ -195,8 +204,9 @@ export default function ChooseUnit({
     const parentDiv = document.createElement("div");
     parentDiv.style.position = "relative";
     parentDiv.style.height = data?.questionHeight + "px";
+
     newElements.forEach((el) => {
-      if (el.tagName === "DIV") {
+      if (el.tagName === "DIV" || el.tagName === "IMG") {
         // @ts-ignore
         const widthValue = Number(el.style.width.replace("px", ""));
         if (widthValue > 300) {
@@ -204,7 +214,12 @@ export default function ChooseUnit({
           el.style.width = "270px";
         }
       }
-      parentDiv.appendChild(el);
+      const newDiv = document.createElement("div");
+      newDiv.style.position = "relative";
+      // @ts-ignore
+      newDiv.style.width = Number(el.style.width.replace("px", "")) + "px";
+      newDiv.appendChild(el);
+      parentDiv.appendChild(newDiv);
     });
     setsmallScreen((prev) => ({ ...prev, correctData: parentDiv.outerHTML }));
   };
@@ -223,9 +238,29 @@ export default function ChooseUnit({
     });
   }, [window.innerWidth]);
 
+  useEffect(() => {
+    if (!divRef) return;
+    setisPageLoaded(true);
+
+    const div = document.createElement("div");
+    div.innerHTML = data?.question;
+
+    const imgElement = div.querySelector("img");
+
+    if (imgElement) {
+      const newImg = new Image();
+      newImg.src = imgElement.src;
+      newImg.onload = () => {
+        setisPageLoaded(false);
+      };
+    } else {
+      setisPageLoaded(false);
+    }
+  }, [data]);
+
   const handleChangeOpacityOver = (e: any) => {
-    if (e.target.tagName === "DIV") {
-      const divElements = divRef.current.querySelectorAll("div");
+    if (e.target.tagName === "DIV" || e.target.tagName === "IMG") {
+      const divElements = divRef.current.querySelectorAll("*");
       const divArray = Array.from(divElements) as any[];
       divArray.forEach((div) => {
         if (div.tagName === "DIV" && div.id) {
@@ -237,18 +272,35 @@ export default function ChooseUnit({
             }
           }
         }
+        if (div.tagName === "IMG" && div.id) {
+          if (div.id !== targetId) {
+            if (div.id === e.target.id) {
+              div.style.scale = "106%";
+              div.style.boxShadow = "0 0 10px rgba(0,0,0,0.1)";
+            } else {
+              div.style.scale = "100%";
+              div.style.boxShadow = "none";
+            }
+          }
+        }
       });
     }
   };
 
   const handleChangeOpacityOut = (e: any) => {
-    if (e.target.tagName === "DIV") {
-      const divElements = divRef.current.querySelectorAll("div");
+    if (e.target.tagName === "DIV" || e.target.tagName === "IMG") {
+      const divElements = divRef.current.querySelectorAll("*");
       const divArray = Array.from(divElements) as any[];
       divArray.forEach((div) => {
         if (div.tagName === "DIV") {
           if (div.id !== targetId) {
             div.style.opacity = "100%";
+          }
+        }
+        if (div.tagName === "IMG") {
+          if (div.id !== targetId) {
+            div.style.scale = "100%";
+            div.style.boxShadow = "none";
           }
         }
       });
@@ -259,21 +311,33 @@ export default function ChooseUnit({
     if (e.target.id) {
       let htmlString = "";
       // Updating Styles
-      const divElements = divRef.current.querySelectorAll("div");
+      const divElements = divRef.current.querySelectorAll("*");
 
       const divArray = Array.from(divElements) as any[];
       divArray.forEach((div) => {
         if (div.id) {
           div.style.opacity = "100%";
-          if (div.id === e.target.id) {
-            setTargetId(e.target.id);
-            if (e.target.tagName === "DIV") {
+          if (e.target.tagName === "DIV") {
+            if (div.id === e.target.id) {
+              setTargetId(e.target.id);
               div.style.backgroundColor = "#ade8f4";
+              div.style.scale = "107%";
+            } else {
+              div.style.backgroundColor = "white";
+              div.style.scale = "100%";
             }
-            div.style.scale = "107%";
-          } else {
-            div.style.backgroundColor = "white";
-            div.style.scale = "100%";
+          }
+          if (e.target.tagName === "IMG") {
+            if (div.id === e.target.id) {
+              setTargetId(e.target.id);
+              div.style.scale = "110%";
+              div.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+              div.style.filter = "grayscale(0%)";
+            } else {
+              div.style.scale = "100%";
+              div.style.boxShadow = "none";
+              div.style.filter = "grayscale(100%)";
+            }
           }
           htmlString += div.outerHTML;
         }
@@ -281,7 +345,6 @@ export default function ChooseUnit({
       setHtmlDataCorrect(htmlString);
     }
   };
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!targetId) {
@@ -303,66 +366,117 @@ export default function ChooseUnit({
         const divElement = document.createElement("div");
         divElement.innerHTML = data?.example;
         const questionElements = divElement.querySelectorAll("*");
-
-        const parentDivCorrect = document.createElement("div");
-        parentDivCorrect.style.position = "relative";
-        parentDivCorrect.style.height = data?.questionHeight + "px";
-
+        let htmlStringCorrect = "";
         questionElements.forEach((el) => {
           if (el.id) {
             data?.correctAnswer.forEach((ans: any) => {
               if (ans?.id === Number(el.id)) {
-                if (JSON.parse(ans.answer)) {
-                  // @ts-ignore
-                  el.style.opacity = "100%";
-                  // @ts-ignore
-                  el.style.backgroundColor = "#9ef01a";
-                  // @ts-ignore
-                  el.style.scale = "107%";
-                } else {
-                  // @ts-ignore
-                  el.style.opacity = "80%";
-                  // @ts-ignore
-                  el.style.backgroundColor = "#fff";
-                  // @ts-ignore
-                  el.style.scale = "100%";
+                if (el.tagName === "DIV") {
+                  if (JSON.parse(ans.answer)) {
+                    // @ts-ignore
+                    el.style.opacity = "100%";
+                    // @ts-ignore
+                    el.style.backgroundColor = "#9ef01a";
+                    // @ts-ignore
+                    el.style.scale = "107%";
+                  } else {
+                    // @ts-ignore
+                    el.style.opacity = "80%";
+                    // @ts-ignore
+                    el.style.backgroundColor = "#fff";
+                    // @ts-ignore
+                    el.style.scale = "100%";
+                  }
+                }
+                if (el.tagName === "IMG") {
+                  if (JSON.parse(ans.answer)) {
+                    // @ts-ignore
+                    el.style.scale = "110%";
+                    // @ts-ignore
+                    el.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+                    // @ts-ignore
+                    el.style.filter = "grayscale(0%)";
+                    // @ts-ignore
+                    el.style.opacity = "100%";
+                  } else {
+                    // @ts-ignore
+                    el.style.scale = "100%";
+                    // @ts-ignore
+                    el.style.boxShadow = "none";
+                    // @ts-ignore
+                    el.style.filter = "grayscale(100%)";
+                    // @ts-ignore
+                    el.style.opacity = "60%";
+                  }
                 }
               }
             });
-            parentDivCorrect.appendChild(el);
+            // parentDivCorrect.appendChild(el);
+            htmlStringCorrect += el.outerHTML;
           }
         });
-        setHtmlDataCorrect(parentDivCorrect.outerHTML);
+        // parentDivCorrect.style.display = "flex";
+        setHtmlDataCorrect(htmlStringCorrect);
         // For Correct Html Data End
 
         // For Wrong Html Data Start
-
-        const parentDivWrong = document.createElement("div");
-        parentDivWrong.style.position = "absolute";
-        parentDivWrong.style.height = data?.questionHeight + "px";
+        let htmlStringWrong = "";
 
         questionElements.forEach((el) => {
           if (el.id) {
-            // @ts-ignore
-            if (el.id === targetId) {
+            if (el.tagName === "DIV") {
               // @ts-ignore
-              el.style.opacity = "100%";
-              // @ts-ignore
-              el.style.backgroundColor = "#ff758f";
-              // @ts-ignore
-              el.style.scale = "107%";
-            } else {
-              // @ts-ignore
-              el.style.opacity = "80%";
-              // @ts-ignore
-              el.style.backgroundColor = "white";
-              // @ts-ignore
-              el.style.scale = "100%";
+              if (el.id === targetId) {
+                // @ts-ignore
+                el.style.opacity = "100%";
+                // @ts-ignore
+                el.style.backgroundColor = "#ff758f";
+                // @ts-ignore
+                el.style.scale = "107%";
+              } else {
+                // @ts-ignore
+                el.style.opacity = "80%";
+                // @ts-ignore
+                el.style.backgroundColor = "white";
+                // @ts-ignore
+                el.style.scale = "100%";
+              }
             }
-            parentDivWrong.appendChild(el);
+            if (el.tagName === "IMG") {
+              // @ts-ignore
+              if (el.id === targetId) {
+                // @ts-ignore
+                el.style.scale = "110%";
+                // @ts-ignore
+                el.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+                // @ts-ignore
+                el.style.filter = "grayscale(0%)";
+                // @ts-ignore
+                el.style.opacity = "100%";
+              } else {
+                // @ts-ignore
+                el.style.scale = "100%";
+                // @ts-ignore
+                el.style.boxShadow = "none";
+                // @ts-ignore
+                el.style.filter = "grayscale(100%)";
+                // @ts-ignore
+                el.style.opacity = "60%";
+              }
+            }
+
+            const newDiv = document.createElement("div");
+            newDiv.style.position = "relative";
+            newDiv.style.width = `${Number(
+              // @ts-ignore
+              el.style.width.replace("px", "")
+            )}px`;
+            newDiv.appendChild(el);
+            htmlStringWrong += newDiv.outerHTML;
           }
         });
-        setHtmlDataWrong(parentDivWrong.outerHTML);
+
+        setHtmlDataWrong(htmlStringWrong);
         // For Wrong Html Data End
 
         setIsWrongAns(true);
@@ -379,14 +493,21 @@ export default function ChooseUnit({
     setIsWrongAns(false);
     setTargetId(null);
   };
-  console.log(data?._id);
 
   return (
     <>
+      {isPageLoaded && (
+        <div className="w-full h-full bg-white absolute top-0 left-0 rounded-lg flex items-center justify-center z-50">
+          <div className="flex gap-2 items-center">
+            <Loader2 className="w-7 h-7 text-primary animate-spin" />
+            <p className="text-primary font-medium text-base">Loading...</p>
+          </div>
+        </div>
+      )}
       {IsWrongAns ? (
         <div className="flex flex-col gap-8 mt-5 w-full">
           {/* Correct Answer */}
-          <div className="relative flex flex-col gap-3 w-[700px]  min-h-[380px]">
+          <div className="relative flex flex-col gap-3  min-h-[380px]">
             <h1 className="text-4xl font-semibold text-blue">
               Sorry, incorrect...
             </h1>
@@ -449,8 +570,10 @@ export default function ChooseUnit({
                   You answered:
                 </h3>
                 <div
-                  style={{ bottom: `${data?.questionHeight}px` }}
-                  className={`flex items-center absolute`}
+                  style={{
+                    bottom: `${data?.questionHeight}px`,
+                  }}
+                  className={`flex items-center absolute bottom-2`}
                 >
                   <div dangerouslySetInnerHTML={{ __html: htmlDataWrong }} />
                 </div>

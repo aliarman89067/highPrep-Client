@@ -4,9 +4,11 @@ import {
   FormEvent,
   SetStateAction,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { Button } from "./ui/button";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   data: any;
@@ -32,6 +34,7 @@ export default function InputUnit({
   setScore,
 }: Props) {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [isPageLoaded, setisPageLoaded] = useState<boolean>(true);
   const [increaseHeight, setIncreaseHeight] = useState({
     question: 0,
     review: 0,
@@ -42,6 +45,26 @@ export default function InputUnit({
     review: "",
     explanation: "",
   });
+
+  const divRef = useRef<any>(null);
+
+  let isPageLoad = false;
+
+  useEffect(() => {
+    if (isPageLoad || !divRef) return;
+    const imgElement = divRef.current.querySelector("img");
+    if (imgElement) {
+      const newImg = new Image();
+      newImg.src = imgElement.src;
+      newImg.onload = () => {
+        isPageLoad = true;
+        setisPageLoaded(false);
+      };
+    } else {
+      isPageLoad = true;
+      setisPageLoaded(false);
+    }
+  }, []);
 
   const changeQuestionPos = () => {
     const div = document.createElement("div");
@@ -178,9 +201,6 @@ export default function InputUnit({
       }
       if (offsetValue > 0) {
         if (offsetValue > 30 && el.tagName === "SPAN") {
-          console.log(el);
-          console.log(scrollHeight);
-
           increaseHeight += offsetValue;
           div.style.height = offsetValue + "px";
         }
@@ -254,6 +274,14 @@ export default function InputUnit({
   console.log(data._id);
   return (
     <>
+      {isPageLoaded && (
+        <div className="w-full h-full bg-white absolute top-0 left-0 rounded-lg flex items-center justify-center z-50">
+          <div className="flex gap-2 items-center">
+            <Loader2 className="w-7 h-7 text-primary animate-spin" />
+            <p className="text-primary font-medium text-base">Loading...</p>
+          </div>
+        </div>
+      )}
       {isWrongAns ? (
         <div className="flex flex-col gap-8 mt-5 w-full">
           {/* Correct Answer */}
@@ -359,6 +387,7 @@ export default function InputUnit({
         </div>
       ) : (
         <form
+          ref={divRef}
           onSubmit={handleSubmit}
           className={`w-[68%] sm:w-[75%] md:w-[75%] lg:w-[850px] h-full absolute top-0 ${
             windowWidth > 800 ? "left-8" : "left-4"

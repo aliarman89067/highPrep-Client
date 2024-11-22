@@ -28,12 +28,214 @@ export default function ChooseMultipleUnit({
   const [htmlDataCorrect, setHtmlDataCorrect] = useState<string>("");
   const [htmlDataWrong, setHtmlDataWrong] = useState<string>("");
   const [isPageLoaded, setisPageLoaded] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [smallScreen, setSmallScreen] = useState({
+    question: "",
+    review: "",
+    explanation: "",
+    correctData: "",
+  });
+  const [increaseHeight, setIncreaseHeight] = useState({
+    question: 0,
+    review: 0,
+    explanation: 0,
+  });
 
   const divRef = useRef<any>();
+
+  const changeQuestionPos = () => {
+    const div = document.createElement("div");
+    div.innerHTML = data?.question;
+    const elements = Array.from(div.querySelectorAll("*"));
+
+    const newElements = elements.filter((el) => {
+      // @ts-ignore
+      const topValue = el.style.top;
+      return topValue && topValue;
+    });
+
+    newElements.sort((a, b) => {
+      // @ts-ignore
+      return parseFloat(a.style.top) - parseFloat(b.style.top);
+    });
+
+    let htmlString = "";
+
+    newElements.forEach((el) => {
+      const div = document.createElement("div");
+      div.style.position = "relative";
+
+      let offsetValue = 0;
+      if (el.tagName === "SPAN") {
+        document.body.appendChild(el);
+        offsetValue = el.getBoundingClientRect().height;
+        document.body.removeChild(el);
+      } else {
+        if (el.tagName === "DIV" && el.id) {
+          // @ts-ignore
+          const widthValue = Number(el.style.width.replace("px", ""));
+          if (widthValue > 300) {
+            // @ts-ignore
+            el.style.width = "280px";
+            div.appendChild(el);
+          } else {
+            div.appendChild(el);
+          }
+        } else {
+          div.appendChild(el);
+        }
+      }
+      if (offsetValue > 0) {
+        if (offsetValue > 30) {
+          div.style.height = offsetValue + "px";
+        }
+        div.appendChild(el);
+      }
+
+      htmlString += div.outerHTML;
+    });
+    setSmallScreen((prev) => ({ ...prev, question: htmlString }));
+  };
+
+  const changeReviewPos = () => {
+    const div = document.createElement("div");
+    div.innerHTML = data?.review;
+    const elements = Array.from(div.querySelectorAll("*"));
+
+    const newElements = elements.filter((el) => {
+      // @ts-ignore
+      const topValue = el.style.top;
+      return topValue && topValue;
+    });
+
+    newElements.sort((a, b) => {
+      // @ts-ignore
+      return parseFloat(a.style.top) - parseFloat(b.style.top);
+    });
+
+    let htmlString = "";
+    let increaseHeight = 0;
+
+    newElements.forEach((el) => {
+      const div = document.createElement("div");
+      div.style.position = "relative";
+
+      let offsetValue = 0;
+      if (el.tagName === "SPAN") {
+        document.body.appendChild(el);
+        offsetValue = el.getBoundingClientRect().height;
+        document.body.removeChild(el);
+      } else {
+        div.appendChild(el);
+      }
+      if (offsetValue > 0) {
+        if (offsetValue > 30) {
+          div.style.height = offsetValue + "px";
+          increaseHeight += offsetValue;
+        }
+        div.appendChild(el);
+      }
+
+      htmlString += div.outerHTML;
+    });
+    setSmallScreen((prev) => ({ ...prev, review: htmlString }));
+    setIncreaseHeight((prev) => ({ ...prev, review: increaseHeight }));
+  };
+
+  const changeExplanationPos = () => {
+    const div = document.createElement("div");
+    div.innerHTML = data?.explanation;
+    const elements = Array.from(div.querySelectorAll("*"));
+
+    const newElements = elements.filter((el) => {
+      // @ts-ignore
+      const topValue = el.style.top;
+      return topValue && topValue;
+    });
+
+    newElements.sort((a, b) => {
+      // @ts-ignore
+      return parseFloat(a.style.top) - parseFloat(b.style.top);
+    });
+
+    let htmlString = "";
+    let increaseHeight = 0;
+
+    newElements.forEach((el) => {
+      const div = document.createElement("div");
+      div.style.position = "relative";
+
+      let offsetValue = 0;
+      if (el.tagName === "SPAN") {
+        document.body.appendChild(el);
+        offsetValue = el.getBoundingClientRect().height;
+        document.body.removeChild(el);
+      } else {
+        div.appendChild(el);
+      }
+      if (offsetValue > 0) {
+        if (offsetValue > 30) {
+          div.style.height = offsetValue + "px";
+          increaseHeight += offsetValue;
+        }
+        div.appendChild(el);
+      }
+
+      htmlString += div.outerHTML;
+    });
+    setSmallScreen((prev) => ({ ...prev, explanation: htmlString }));
+    setIncreaseHeight((prev) => ({ ...prev, explanation: increaseHeight }));
+  };
+
+  const changeCorrectData = () => {
+    const div = document.createElement("div");
+    div.innerHTML = htmlDataCorrect;
+    const elements = Array.from(div.querySelectorAll("*"));
+    const newElements = elements.filter((el) => {
+      // @ts-ignore
+      const topValue = el.style?.top;
+      return topValue && topValue;
+    });
+    newElements.sort((a, b) => {
+      // @ts-ignore
+      return parseFloat(a.style.top) - parseFloat(b.style.top);
+    });
+
+    const parentDiv = document.createElement("div");
+    parentDiv.style.position = "relative";
+    parentDiv.style.height = data?.questionHeight + "px";
+    newElements.forEach((el) => {
+      if (el.tagName === "DIV") {
+        // @ts-ignore
+        const widthValue = Number(el.style.width.replace("px", ""));
+        if (widthValue > 300) {
+          // @ts-ignore
+          el.style.width = "270px";
+        }
+      }
+      parentDiv.appendChild(el);
+      parentDiv.style.width = "1000px";
+    });
+    setSmallScreen((prev) => ({ ...prev, correctData: parentDiv.outerHTML }));
+  };
+
+  useEffect(() => {
+    changeQuestionPos();
+    changeReviewPos();
+    changeExplanationPos();
+    changeCorrectData();
+  }, [windowWidth, htmlDataCorrect, IsWrongAns, data]);
 
   useEffect(() => {
     setTargetId([]);
   }, [isCorrectAns]);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      const width = window.innerWidth;
+      setWindowWidth(width);
+    });
+  }, [window.innerWidth]);
 
   let isImageLoad = false;
 
@@ -47,20 +249,38 @@ export default function ChooseMultipleUnit({
         setisPageLoaded(false);
         isImageLoad = true;
       };
+    } else {
+      setisPageLoaded(false);
+      isImageLoad = true;
     }
   }, []);
 
   const handleChangeOpacityOver = (e: any) => {
-    if (e.target.tagName === "DIV") {
-      const divElements = divRef.current.querySelectorAll("div");
+    if (e.target.tagName === "DIV" || e.target.tagName === "IMG") {
+      const divElements = divRef.current.querySelectorAll("*");
       const divArray = Array.from(divElements) as any[];
       divArray.forEach((div) => {
-        if (div.tagName === "DIV" && div.id) {
-          if (div.id !== targetId) {
-            if (div.id === e.target.id) {
-              div.style.opacity = "70%";
-            } else {
-              div.style.opacity = "100%";
+        if (!targetId?.includes(div.id)) {
+          if (div.tagName === "DIV" && div.id) {
+            if (e.target.id === div.id) {
+              if (div.id === e.target.id) {
+                div.style.opacity = "70%";
+              } else {
+                div.style.opacity = "100%";
+              }
+            }
+          }
+          if (div.tagName === "IMG" && div.id) {
+            if (!targetId?.includes(div.id) || e.target.id === div.id) {
+              if (div.id === e.target.id) {
+                div.style.scale = "106%";
+                div.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+                div.style.opacity = "100%";
+              } else {
+                div.style.scale = "100%";
+                div.style.boxShadow = "none";
+                div.style.opacity = "80%";
+              }
             }
           }
         }
@@ -84,23 +304,27 @@ export default function ChooseMultipleUnit({
   };
 
   const handleChangeOpacityOut = (e: any) => {
-    if (e.target.tagName === "IMG" && e.target.id) {
-      const imgElements = divRef.current.querySelectorAll("img");
-      const imgArray = Array.from(imgElements) as any[];
-      imgArray.forEach((img) => {
-        const isActive = targetId?.includes(img.id);
-        if (isActive) return;
-        if (img.tagName === "IMG" && img.id) {
-          if (img.id !== targetId) {
-            img.style.opacity = "60%";
-          }
+    const imgElements = divRef.current.querySelectorAll("*");
+    const div = Array.from(imgElements) as any[];
+    div.forEach((el) => {
+      if (!targetId?.includes(el.id)) {
+        if (el.tagName === "IMG" && el.id) {
+          el.style.scale = "100%";
+          el.style.boxShadow = "none";
+          el.style.opacity = "100%";
         }
-      });
-    }
+        if (el.tagName === "DIV" && el.id) {
+          el.style.opacity = "100%";
+        }
+      }
+    });
   };
 
   const handleClick = (e: any) => {
-    if (e.target.tagName === "IMG" && e.target.id) {
+    if (
+      (e.target.tagName === "IMG" || e.target.tagName === "DIV") &&
+      e.target.id
+    ) {
       let htmlString = "";
       const currenttarget = e.target.id;
       const isActive = targetId?.includes(currenttarget) || false;
@@ -113,14 +337,25 @@ export default function ChooseMultipleUnit({
           return [...(prevIds || []), currenttarget];
         }
       });
-      e.target.style.opacity = isActive ? "80%" : "100%";
-      e.target.style.scale = isActive ? "100%" : "108%";
+      if (e.target.tagName === "IMG") {
+        e.target.style.scale = isActive ? "100%" : "110%";
+        e.target.style.boxShadow = isActive
+          ? "none"
+          : "0 0 10px rgba(0,0,0,0.7)";
+      }
+      if (e.target.tagName === "DIV") {
+        e.target.style.opacity = isActive ? "80%" : "100%";
+        e.target.style.scale = isActive ? "100%" : "108%";
+        e.target.style.backgroundColor = isActive ? "transparent" : "#ade8f4";
+      }
 
-      const imgElements = divRef.current.querySelectorAll("img");
+      const el = divRef.current.querySelectorAll("*");
 
-      const imgArray = Array.from(imgElements) as any[];
-      imgArray.forEach((div) => {
-        htmlString += div.outerHTML;
+      const elArray = Array.from(el) as any[];
+      elArray.forEach((item) => {
+        if (item.id) {
+          htmlString += item.outerHTML;
+        }
       });
       setHtmlDataCorrect(htmlString);
       setHtmlDataWrong(htmlString);
@@ -141,6 +376,7 @@ export default function ChooseMultipleUnit({
       audio.play();
     }
   };
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!targetId?.length) {
@@ -171,55 +407,115 @@ export default function ChooseMultipleUnit({
     if (isFound) {
       if (!isCorrect) {
         // For Correct Html Data Start
+        const divElement = document.createElement("div");
+        divElement.innerHTML = data?.example;
+        const questionElements = divElement.querySelectorAll("*");
+
         let htmlStringCorrect = "";
-        const tempDivCorrect = document.createElement("div");
-        tempDivCorrect.innerHTML = htmlDataCorrect;
-        const divElementsCorrect = tempDivCorrect.querySelectorAll("img");
-        divElementsCorrect.forEach((img) => {
-          if (img.id) {
-            img.style.top = "0%";
-            img.style.opacity = "100%";
-            img.style.cursor = "default";
-            img.style.scale = "100%";
+
+        questionElements.forEach((el) => {
+          if (el.id) {
             data?.correctAnswer.forEach((ans: any) => {
-              if (ans.id === Number(img.id)) {
-                if (JSON.parse(ans.answer)) {
-                  img.style.filter = "grayScale(0%)";
-                  img.style.scale = "108%";
-                } else {
-                  img.style.filter = "grayScale(100%)";
+              // STYLING FOR DIV
+              if (el.tagName === "DIV") {
+                if (ans?.id === Number(el.id)) {
+                  if (JSON.parse(ans.answer)) {
+                    // @ts-ignore
+                    el.style.opacity = "100%";
+                    // @ts-ignore
+                    el.style.backgroundColor = "#9ef01a";
+                    // @ts-ignore
+                    el.style.scale = "107%";
+                  } else {
+                    // @ts-ignore
+                    el.style.opacity = "100%";
+                    // @ts-ignore
+                    el.style.backgroundColor = "#fff";
+                    // @ts-ignore
+                    el.style.scale = "100%";
+                  }
+                }
+              }
+              // STYLING FOR IMAGES
+              if (el.tagName === "IMG") {
+                if (ans?.id === Number(el.id)) {
+                  if (JSON.parse(ans.answer)) {
+                    // @ts-ignore
+                    el.style.filter = "grayscale(0%)";
+                    // @ts-ignore
+                    el.style.scale = "107%";
+                    // @ts-ignore
+                    el.style.opacity = "100%";
+                  } else {
+                    // @ts-ignore
+                    el.style.filter = "grayscale(100%)";
+                    // @ts-ignore
+                    el.style.scale = "100%";
+                    // @ts-ignore
+                    el.style.opacity = "70%";
+                  }
                 }
               }
             });
-            htmlStringCorrect += img.outerHTML;
+            htmlStringCorrect += el.outerHTML;
           }
         });
-
         setHtmlDataCorrect(htmlStringCorrect);
-
         // For Correct Html Data End
         // For Wrong Html Data Start
 
-        let htmlStringWrong = "";
-        const tempDivWrong = document.createElement("div");
-        tempDivWrong.innerHTML = htmlDataWrong;
-        const divElementsWrong = tempDivWrong.querySelectorAll("img");
-        divElementsWrong.forEach((img) => {
-          if (img.id) {
-            img.style.top = "0%";
-            img.style.opacity = "100%";
-            img.style.cursor = "default";
-            // @ts-ignore
-            if (targetId.includes(img.id)) {
-              img.style.filter = "grayScale(0%)";
-            } else {
-              img.style.filter = "grayScale(100%)";
-            }
+        let htmlWrongString = "";
 
-            htmlStringWrong += img.outerHTML;
+        questionElements.forEach((el) => {
+          if (el.id) {
+            if (el.tagName === "DIV") {
+              // @ts-ignore
+              if (targetId.includes(el.id)) {
+                // @ts-ignore
+                el.style.opacity = "100%";
+                // @ts-ignore
+                el.style.backgroundColor = "#ff758f";
+                // @ts-ignore
+                el.style.scale = "107%";
+              } else {
+                // @ts-ignore
+                el.style.opacity = "100%";
+                // @ts-ignore
+                el.style.backgroundColor = "white";
+                // @ts-ignore
+                el.style.scale = "100%";
+              }
+            }
+            if (el.tagName === "IMG") {
+              // @ts-ignore
+              if (targetId.includes(el.id)) {
+                // @ts-ignore
+                el.style.filter = "grayscale(0%)";
+                // @ts-ignore
+                el.style.scale = "107%";
+                // @ts-ignore
+                el.style.opacity = "100%";
+              } else {
+                // @ts-ignore
+                el.style.filter = "grayscale(100%)";
+                // @ts-ignore
+                el.style.scale = "100%";
+                // @ts-ignore
+                el.style.opacity = "70%";
+              }
+            }
+            const newDiv = document.createElement("div");
+            newDiv.style.position = "relative";
+            newDiv.style.width = `${Number(
+              // @ts-ignore
+              el.style.width.replace("px", "")
+            )}px`;
+            newDiv.appendChild(el);
+            htmlWrongString += newDiv.outerHTML;
           }
         });
-        setHtmlDataWrong(htmlStringWrong);
+
+        setHtmlDataWrong(htmlWrongString);
         // For Wrong Html Data End
 
         setIsWrongAns(true);
@@ -246,9 +542,9 @@ export default function ChooseMultipleUnit({
         </div>
       )}
       {IsWrongAns ? (
-        <div className="flex flex-col gap-2 mt-5 w-full">
+        <div className="flex flex-col gap-8 mt-5 w-full">
           {/* Correct Answer */}
-          <div className="relative flex flex-col gap-3 min-h-[380px]">
+          <div className="relative flex flex-col gap-3  min-h-[380px]">
             <h1 className="text-4xl font-semibold text-blue">
               Sorry, incorrect...
             </h1>
@@ -258,8 +554,13 @@ export default function ChooseMultipleUnit({
               className="flex items-center relative"
             >
               <div
-                className="absolute top-0 w-full"
-                dangerouslySetInnerHTML={{ __html: htmlDataCorrect }}
+                className=""
+                dangerouslySetInnerHTML={{
+                  __html:
+                    windowWidth > 800
+                      ? htmlDataCorrect
+                      : smallScreen.correctData,
+                }}
               />
             </div>
             <Button
@@ -270,13 +571,20 @@ export default function ChooseMultipleUnit({
             </Button>
           </div>
           {/* Explanation */}
-          <div className="flex flex-col gap-3 mb-8">
+          <div className="flex flex-col gap-3">
             <h1 className="text-2xl font-semibold text-darkGreen">
               Explanation
             </h1>
             <div
-              style={{ height: `${data?.reviewHeight}px` }}
-              className={`relative border border-gray-400 rounded-md`}
+              style={{
+                height:
+                  windowWidth > 800
+                    ? `${data?.reviewHeight}px`
+                    : `${data?.reviewHeight + increaseHeight.review}px`,
+              }}
+              className={`relative border border-gray-400 rounded-md ${
+                windowWidth > 800 ? "px-8" : "px-6"
+              } py-5`}
             >
               <img
                 src={icons.review}
@@ -284,22 +592,23 @@ export default function ChooseMultipleUnit({
                 className="absolute -left-3 top-5"
               />
               <div
-                onClick={handleClick}
-                className="absolute w-full top-5 z-50"
-                dangerouslySetInnerHTML={{ __html: data?.review }}
+                className="relative"
+                dangerouslySetInnerHTML={{
+                  __html: windowWidth > 800 ? data?.review : smallScreen.review,
+                }}
               />
-              <div className="relative flex flex-col gap-3 h-full">
+              <div className="absolute bottom-3 flex flex-col gap-3 h-full">
                 <h3
                   style={{
                     bottom: `calc(${data?.questionHeight || 0}px + 10px)`,
                   }}
-                  className={`absolute left-10 text-xl font-medium text-darkGreen`}
+                  className={`absolute text-xl font-medium text-darkGreen whitespace-nowrap`}
                 >
                   You answered:
                 </h3>
                 <div
                   style={{ bottom: `${data?.questionHeight}px` }}
-                  className={`flex items-center absolute w-full`}
+                  className={`flex items-center absolute`}
                 >
                   <div dangerouslySetInnerHTML={{ __html: htmlDataWrong }} />
                 </div>
@@ -308,8 +617,15 @@ export default function ChooseMultipleUnit({
           </div>
           {/* Solution */}
           <div
-            style={{ height: `${data?.explanationHeight}px` }}
-            className={`relative border border-gray-400 rounded-md`}
+            style={{
+              height:
+                windowWidth > 800
+                  ? `${data?.explanationHeight}px`
+                  : `${data?.explanationHeight + increaseHeight.explanation}px`,
+            }}
+            className={`relative border border-gray-400 rounded-md py-5 ${
+              windowWidth > 800 ? "px-8" : "px-6"
+            }`}
           >
             <img
               src={icons.explanation}
@@ -317,9 +633,13 @@ export default function ChooseMultipleUnit({
               className="absolute -left-3 top-5"
             />
             <div
-              onClick={handleClick}
-              className="absolute top-5 w-full"
-              dangerouslySetInnerHTML={{ __html: data?.explanation }}
+              className="relative"
+              dangerouslySetInnerHTML={{
+                __html:
+                  windowWidth > 800
+                    ? data?.explanation
+                    : smallScreen.explanation,
+              }}
             />
           </div>
           <Button
@@ -332,14 +652,18 @@ export default function ChooseMultipleUnit({
       ) : (
         <form
           onSubmit={handleSubmit}
-          className={`w-[68%] sm:w-[75%] md:w-[75%] lg:w-[850px] h-full absolute top-0 left-8`}
+          className={`w-[68%] sm:w-[75%] md:w-[75%] lg:w-[850px] h-full absolute top-0 ${
+            windowWidth > 800 ? "left-8" : "left-4"
+          }`}
         >
           <div
             ref={divRef}
             onClick={handleClick}
             onMouseOver={handleChangeOpacityOver}
             onMouseOut={handleChangeOpacityOut}
-            dangerouslySetInnerHTML={{ __html: data?.question }}
+            dangerouslySetInnerHTML={{
+              __html: windowWidth > 800 ? data?.question : smallScreen.question,
+            }}
           />
         </form>
       )}
