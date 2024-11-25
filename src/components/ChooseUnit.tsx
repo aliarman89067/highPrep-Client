@@ -37,6 +37,7 @@ export default function ChooseUnit({
     review: "",
     explanation: "",
     correctData: "",
+    wrongData: "",
   });
 
   const divRef = useRef<any>();
@@ -72,9 +73,13 @@ export default function ChooseUnit({
         if (el.tagName === "DIV" && el.id) {
           // @ts-ignore
           const widthValue = Number(el.style.width.replace("px", ""));
-          if (widthValue > 300) {
+          if (widthValue > 350) {
             // @ts-ignore
-            el.style.width = "280px";
+            el.style.width = "300px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
             div.appendChild(el);
           } else {
             div.appendChild(el);
@@ -124,6 +129,18 @@ export default function ChooseUnit({
         offsetValue = el.getBoundingClientRect().height;
         document.body.removeChild(el);
       } else {
+        if (el.tagName === "DIV" || el.tagName === "IMG") {
+          // @ts-ignore
+          const widthValue = Number(el.style.width.replace("px", ""));
+          if (widthValue > 350) {
+            // @ts-ignore
+            el.style.width = "300px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
+          }
+        }
         div.appendChild(el);
       }
       if (offsetValue > 0) {
@@ -131,6 +148,7 @@ export default function ChooseUnit({
           div.style.height = offsetValue + "px";
           increaseHeight += offsetValue;
         }
+
         div.appendChild(el);
       }
 
@@ -176,6 +194,18 @@ export default function ChooseUnit({
           increaseHeight += offsetValue;
           div.style.height = offsetValue + "px";
         }
+        if (el.tagName === "DIV" || el.tagName === "IMG") {
+          // @ts-ignore
+          const widthValue = Number(el.style.width.replace("px", ""));
+          if (widthValue > 350) {
+            // @ts-ignore
+            el.style.width = "300px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
+          }
+        }
         div.appendChild(el);
       }
 
@@ -212,6 +242,10 @@ export default function ChooseUnit({
         if (widthValue > 300) {
           // @ts-ignore
           el.style.width = "270px";
+          const insideText = el.querySelector("p");
+          if (insideText) {
+            insideText.style.fontSize = "14px";
+          }
         }
       }
       const newDiv = document.createElement("div");
@@ -223,12 +257,54 @@ export default function ChooseUnit({
     });
     setsmallScreen((prev) => ({ ...prev, correctData: parentDiv.outerHTML }));
   };
+  const changeWrongtData = () => {
+    const div = document.createElement("div");
+    div.innerHTML = htmlDataWrong;
+
+    const elements = Array.from(div.querySelectorAll("*"));
+
+    const newElements = elements.filter((el) => {
+      // @ts-ignore
+      const topValue = el.style?.top;
+      return topValue && topValue;
+    });
+    newElements.sort((a, b) => {
+      // @ts-ignore
+      return parseFloat(a.style.top) - parseFloat(b.style.top);
+    });
+
+    const parentDiv = document.createElement("div");
+
+    newElements.forEach((el) => {
+      if (el.tagName === "DIV" || el.tagName === "IMG") {
+        // @ts-ignore
+        const widthValue = Number(el.style.width.replace("px", ""));
+        if (widthValue > 300) {
+          // @ts-ignore
+          el.style.width = "270px";
+          const insideText = el.querySelector("p");
+          if (insideText) {
+            insideText.style.fontSize = "14px";
+          }
+        }
+      }
+      const newDiv = document.createElement("div");
+      newDiv.style.position = "relative";
+      // @ts-ignore
+      newDiv.style.width = Number(el.style.width.replace("px", "")) + "px";
+      newDiv.appendChild(el);
+      parentDiv.appendChild(newDiv);
+    });
+    setsmallScreen((prev) => ({ ...prev, wrongData: parentDiv.outerHTML }));
+  };
+  console.log(targetId);
 
   useEffect(() => {
     changeQuestionPos();
     changeReviewPos();
     changeExplanationPos();
     changeCorrectData();
+    changeWrongtData();
   }, [windowWidth, htmlDataCorrect, IsWrongAns, data]);
 
   useEffect(() => {
@@ -286,6 +362,7 @@ export default function ChooseUnit({
       });
     }
   };
+  console.log(data._id);
 
   const handleChangeOpacityOut = (e: any) => {
     if (e.target.tagName === "DIV" || e.target.tagName === "IMG") {
@@ -575,7 +652,14 @@ export default function ChooseUnit({
                   }}
                   className={`flex items-center absolute bottom-2`}
                 >
-                  <div dangerouslySetInnerHTML={{ __html: htmlDataWrong }} />
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        windowWidth > 800
+                          ? htmlDataWrong
+                          : smallScreen.wrongData,
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -627,7 +711,8 @@ export default function ChooseUnit({
             onMouseOver={handleChangeOpacityOver}
             onMouseOut={handleChangeOpacityOut}
             dangerouslySetInnerHTML={{
-              __html: windowWidth > 800 ? data?.question : smallScreen.question,
+              __html:
+                windowWidth > 1000 ? data?.question : smallScreen.question,
             }}
           />
         </form>

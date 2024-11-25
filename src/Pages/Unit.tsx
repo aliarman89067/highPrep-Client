@@ -11,6 +11,7 @@ import ChooseMultipleUnit from "@/components/ChooseMultipleUnit";
 import UnitComplete from "@/components/UnitComplete";
 import { unitTimers } from "@/context";
 import Navbar from "@/components/Navbar";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function Unit() {
   const { pathname } = useLocation();
@@ -59,8 +60,6 @@ export default function Unit() {
         if (score === 100) {
           setIsUniteComplete(true);
         } else {
-          console.log("Next Question");
-
           setQuestionNumber((prev) => prev + 1);
           setIsCorrectAns(false);
         }
@@ -93,12 +92,20 @@ export default function Unit() {
 
       <section className="relative w-full min-h-screen flex justify-center items-center bg-skyBlue px-4">
         {isIncomplete && (
-          <IncompleteMessage setIsIncomplete={setIsIncomplete} />
+          <IncompleteMessage
+            isIncomplete={isIncomplete}
+            setIsIncomplete={setIsIncomplete}
+          />
         )}
         <div
-          className={`relative w-full md:w-[90%] lg:w-[1024px] ${
-            isWrongAns ? "h-auto" : "lg:h-[550px] h-[700px]"
-          } bg-white rounded-lg px-6 py-4 my-4 flex items-center justify-center`}
+          style={{
+            height: isUniteComplete
+              ? 600
+              : isWrongAns
+              ? "auto"
+              : data.subUnits[questionNumber].screenHeight || 650,
+          }}
+          className={`relative w-full md:w-[90%] lg:w-[1024px] bg-white rounded-lg px-6 py-4 my-4 flex items-center justify-center`}
         >
           {isUniteComplete ? (
             <UnitComplete
@@ -121,22 +128,24 @@ export default function Unit() {
                 setTotalTime={setTotalTime}
               />
               {/* Correct Answer Start */}
-              {!isWrongAns && (
-                <div
-                  className={`absolute top-0 left-0 w-full lg:h-[550px] h-[700px] bg-white ${
-                    isCorrectAns ? "opacity-100" : "opacity-0"
-                  } rounded-lg z-50 transition-all duration-500 pointer-events-none flex items-center justify-center`}
-                >
-                  <div className="flex flex-col gap-3 items-center">
-                    <Lottie
-                      animationData={correctLottie}
-                      className="w-[140px] h-[140px]"
-                    />
-                    <h1 className="text-green-500 text-3xl font-semibold">
-                      {awardingWord}
-                    </h1>
-                  </div>
-                </div>
+              {!isWrongAns && isCorrectAns && (
+                <Dialog open={true}>
+                  <DialogContent className="[&>button]:hidden">
+                    <div
+                      className={` rounded-lg z-50 transition-all duration-500 pointer-events-none flex items-center justify-center`}
+                    >
+                      <div className="flex flex-col gap-3 items-center">
+                        <Lottie
+                          animationData={correctLottie}
+                          className="w-[140px] h-[140px]"
+                        />
+                        <h1 className="text-green-500 text-3xl font-semibold">
+                          {awardingWord}
+                        </h1>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               )}
               {/* Correct Answer End */}
 
