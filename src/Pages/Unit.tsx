@@ -12,6 +12,7 @@ import UnitComplete from "@/components/UnitComplete";
 import { unitTimers } from "@/context";
 import Navbar from "@/components/Navbar";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ChooseTextUnit from "@/components/ChooseTextUnit";
 
 export default function Unit() {
   const { pathname } = useLocation();
@@ -28,6 +29,7 @@ export default function Unit() {
   const [awardingWord, setAwardingWord] = useState<string>("Outstanding");
   const [isUniteComplete, setIsUniteComplete] = useState<boolean>(false);
   const [totalTime, setTotalTime] = useState<string>("");
+  const [screenHeight, setScreenHeight] = useState<any>(null);
 
   const { start, timer } = unitTimers();
 
@@ -103,7 +105,9 @@ export default function Unit() {
               ? 600
               : isWrongAns
               ? "auto"
-              : data.subUnits[questionNumber].screenHeight || 650,
+              : screenHeight ||
+                data?.subUnits[questionNumber].screenHeight ||
+                650,
           }}
           className={`relative w-full md:w-[90%] lg:w-[1024px] bg-white rounded-lg px-6 py-4 my-4 flex items-center justify-center`}
         >
@@ -183,6 +187,19 @@ export default function Unit() {
                   setIsCorrectAns={setIsCorrectAns}
                   setQuestionAnswered={setQuestionAnswered}
                   setScore={setScore}
+                />
+              )}
+              {data.subUnits[questionNumber].type === "Choose Text" && (
+                <ChooseTextUnit
+                  data={data.subUnits[questionNumber]}
+                  setIsIncomplete={setIsIncomplete}
+                  IsWrongAns={isWrongAns}
+                  setIsWrongAns={setIsWrongAns}
+                  isCorrectAns={isCorrectAns}
+                  setIsCorrectAns={setIsCorrectAns}
+                  setQuestionAnswered={setQuestionAnswered}
+                  setScore={setScore}
+                  setScreenHeight={setScreenHeight}
                 />
               )}
             </>

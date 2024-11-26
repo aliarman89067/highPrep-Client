@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import icons from "@/constant/icons";
-import { Loader2 } from "lucide-react";
 
 type Props = {
   data: any;
@@ -9,28 +8,31 @@ type Props = {
   setIsWrongAns: Dispatch<SetStateAction<boolean>>;
   IsWrongAns: boolean;
   setIsCorrectAns: Dispatch<SetStateAction<boolean>>;
+  isCorrectAns: boolean;
   setQuestionAnswered: Dispatch<SetStateAction<number>>;
   setScore: Dispatch<SetStateAction<number>>;
+  setScreenHeight: Dispatch<SetStateAction<number>>;
 };
 
-export default function ChooseUnit({
+export default function ChooseTextUnit({
   data,
   setIsIncomplete,
-  IsWrongAns,
   setIsWrongAns,
+  IsWrongAns,
   setIsCorrectAns,
+  isCorrectAns,
+  setScreenHeight,
   setQuestionAnswered,
   setScore,
 }: Props) {
-  const [targetId, setTargetId] = useState<null | number>(null);
-  const [htmlDataCorrect, setHtmlDataCorrect] = useState<string>("");
-  const [htmlDataWrong, setHtmlDataWrong] = useState<string>("");
-  const [isPageLoaded, setisPageLoaded] = useState<boolean>(true);
+  // States
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [increaseHeight, setIncreaseHeight] = useState({
     question: 0,
     review: 0,
     explanation: 0,
+    screenHeight: 0,
+    questionHeight: 0,
   });
   const [smallScreen, setsmallScreen] = useState({
     question: "",
@@ -39,11 +41,15 @@ export default function ChooseUnit({
     correctData: "",
     wrongData: "",
   });
-
-  const divRef = useRef<any>();
+  const [htmlDataCorrect, setHtmlDataCorrect] = useState<string>("");
+  const [htmlDataWrong, setHtmlDataWrong] = useState<string>("");
+  const [targetId, setTargetId] = useState<null | number>(null);
+  // Ref
+  const divRef = useRef<any>("null");
 
   const changeQuestionPos = () => {
     const div = document.createElement("div");
+    div.style.pointerEvents = "none";
     div.innerHTML = data?.question;
     const elements = Array.from(div.querySelectorAll("*"));
 
@@ -59,9 +65,10 @@ export default function ChooseUnit({
     });
 
     let htmlString = "";
-
+    let increaseHeight = 0;
     newElements.forEach((el) => {
       const div = document.createElement("div");
+      div.style.pointerEvents = "none";
       div.style.position = "relative";
 
       let offsetValue = 0;
@@ -80,24 +87,35 @@ export default function ChooseUnit({
             if (insideText) {
               insideText.style.fontSize = "14px";
             }
+            // @ts-ignore
+            el.style.pointerEvents = "auto";
             div.appendChild(el);
           } else {
+            // @ts-ignore
+            el.style.pointerEvents = "auto";
             div.appendChild(el);
           }
         } else {
+          // @ts-ignore
+          el.style.pointerEvents = "auto";
           div.appendChild(el);
         }
       }
       if (offsetValue > 0) {
         if (offsetValue > 30) {
           div.style.height = offsetValue + "px";
+          increaseHeight += offsetValue;
         }
+        // @ts-ignore
+        el.style.pointerEvents = "auto";
         div.appendChild(el);
       }
 
       htmlString += div.outerHTML;
     });
     setsmallScreen((prev) => ({ ...prev, question: htmlString }));
+    // setIncreaseHeight((prev) => ({ ...prev, questionHeight: increaseHeight }));
+    setScreenHeight(data?.screenHeight + increaseHeight);
   };
 
   const changeReviewPos = () => {
@@ -158,9 +176,10 @@ export default function ChooseUnit({
     setIncreaseHeight((prev) => ({ ...prev, review: increaseHeight }));
   };
 
-  const changeExplanationPos = () => {
+  const changeCorrectData = () => {
     const div = document.createElement("div");
-    div.innerHTML = data?.explanation;
+    div.style.pointerEvents = "none";
+    div.innerHTML = htmlDataCorrect;
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
@@ -176,9 +195,9 @@ export default function ChooseUnit({
 
     let htmlString = "";
     let increaseHeight = 0;
-
     newElements.forEach((el) => {
       const div = document.createElement("div");
+      div.style.pointerEvents = "none";
       div.style.position = "relative";
 
       let offsetValue = 0;
@@ -187,14 +206,7 @@ export default function ChooseUnit({
         offsetValue = el.getBoundingClientRect().height;
         document.body.removeChild(el);
       } else {
-        div.appendChild(el);
-      }
-      if (offsetValue > 0) {
-        if (offsetValue > 30 && el.tagName === "SPAN") {
-          increaseHeight += offsetValue;
-          div.style.height = offsetValue + "px";
-        }
-        if (el.tagName === "DIV" || el.tagName === "IMG") {
+        if (el.tagName === "DIV" && el.id) {
           // @ts-ignore
           const widthValue = Number(el.style.width.replace("px", ""));
           if (widthValue > 350) {
@@ -204,107 +216,122 @@ export default function ChooseUnit({
             if (insideText) {
               insideText.style.fontSize = "14px";
             }
+            // @ts-ignore
+            el.style.pointerEvents = "auto";
+            div.appendChild(el);
+          } else {
+            // @ts-ignore
+            el.style.pointerEvents = "auto";
+            div.appendChild(el);
           }
+        } else {
+          // @ts-ignore
+          el.style.pointerEvents = "auto";
+          div.appendChild(el);
         }
+      }
+      if (offsetValue > 0) {
+        if (offsetValue > 30) {
+          div.style.height = offsetValue + "px";
+          increaseHeight += offsetValue;
+        }
+        // @ts-ignore
+        el.style.pointerEvents = "auto";
         div.appendChild(el);
       }
 
       htmlString += div.outerHTML;
     });
-    setsmallScreen((prev) => ({ ...prev, explanation: htmlString }));
-    setIncreaseHeight((prev) => ({ ...prev, explanation: increaseHeight }));
-  };
-
-  const changeCorrectData = () => {
-    const div = document.createElement("div");
-    div.innerHTML = htmlDataCorrect;
-
-    const elements = Array.from(div.querySelectorAll("*"));
-
-    const newElements = elements.filter((el) => {
-      // @ts-ignore
-      const topValue = el.style?.top;
-      return topValue && topValue;
-    });
-    newElements.sort((a, b) => {
-      // @ts-ignore
-      return parseFloat(a.style.top) - parseFloat(b.style.top);
-    });
-
-    const parentDiv = document.createElement("div");
-    parentDiv.style.position = "relative";
-    parentDiv.style.height = data?.questionHeight + "px";
-
-    newElements.forEach((el) => {
-      if (el.tagName === "DIV" || el.tagName === "IMG") {
-        // @ts-ignore
-        const widthValue = Number(el.style.width.replace("px", ""));
-        if (widthValue > 300) {
-          // @ts-ignore
-          el.style.width = "270px";
-          const insideText = el.querySelector("p");
-          if (insideText) {
-            insideText.style.fontSize = "14px";
-          }
-        }
-      }
-      const newDiv = document.createElement("div");
-      newDiv.style.position = "relative";
-      // @ts-ignore
-      newDiv.style.width = Number(el.style.width.replace("px", "")) + "px";
-      newDiv.appendChild(el);
-      parentDiv.appendChild(newDiv);
-    });
-    setsmallScreen((prev) => ({ ...prev, correctData: parentDiv.outerHTML }));
+    setsmallScreen((prev) => ({ ...prev, correctData: htmlString }));
+    setIncreaseHeight((prev) => ({ ...prev, screenHeight: increaseHeight }));
   };
   const changeWrongtData = () => {
     const div = document.createElement("div");
+    div.style.pointerEvents = "none";
     div.innerHTML = htmlDataWrong;
-
     const elements = Array.from(div.querySelectorAll("*"));
 
     const newElements = elements.filter((el) => {
       // @ts-ignore
-      const topValue = el.style?.top;
+      const topValue = el.style.top;
       return topValue && topValue;
     });
+
     newElements.sort((a, b) => {
       // @ts-ignore
       return parseFloat(a.style.top) - parseFloat(b.style.top);
     });
 
-    const parentDiv = document.createElement("div");
-
+    let htmlString = "";
+    let increaseHeight = 0;
     newElements.forEach((el) => {
-      if (el.tagName === "DIV" || el.tagName === "IMG") {
-        // @ts-ignore
-        const widthValue = Number(el.style.width.replace("px", ""));
-        if (widthValue > 300) {
+      const div = document.createElement("div");
+      div.style.width =
+        windowWidth > 800
+          ? "600px"
+          : windowWidth > 600
+          ? "400px"
+          : windowWidth > 400
+          ? "300px"
+          : "200px";
+      div.style.pointerEvents = "none";
+      div.style.position = "relative";
+
+      let offsetValue = 0;
+      if (el.tagName === "SPAN") {
+        document.body.appendChild(el);
+        offsetValue = el.getBoundingClientRect().height;
+        document.body.removeChild(el);
+      } else {
+        if (el.tagName === "DIV" && el.id) {
           // @ts-ignore
-          el.style.width = "270px";
-          const insideText = el.querySelector("p");
-          if (insideText) {
-            insideText.style.fontSize = "14px";
+          const widthValue = Number(el.style.width.replace("px", ""));
+          if (widthValue > 350) {
+            // @ts-ignore
+            el.style.width = "300px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
+            // @ts-ignore
+            el.style.pointerEvents = "auto";
+            div.appendChild(el);
+          } else {
+            // @ts-ignore
+            el.style.pointerEvents = "auto";
+            div.appendChild(el);
           }
+        } else {
+          // @ts-ignore
+          el.style.pointerEvents = "auto";
+          div.appendChild(el);
         }
       }
-      const newDiv = document.createElement("div");
-      newDiv.style.position = "relative";
-      // @ts-ignore
-      newDiv.style.width = Number(el.style.width.replace("px", "")) + "px";
-      newDiv.appendChild(el);
-      parentDiv.appendChild(newDiv);
+      if (offsetValue > 0) {
+        if (offsetValue > 30) {
+          div.style.height = offsetValue + "px";
+          increaseHeight += offsetValue;
+        }
+        // @ts-ignore
+        el.style.pointerEvents = "auto";
+        div.appendChild(el);
+      }
+
+      htmlString += div.outerHTML;
     });
-    setsmallScreen((prev) => ({ ...prev, wrongData: parentDiv.outerHTML }));
+    setsmallScreen((prev) => ({ ...prev, wrongData: htmlString }));
+    // setIncreaseHeight((prev) => ({ ...prev, questionHeight: increaseHeight }));
+    // setScreenHeight(data?.screenHeight + increaseHeight);
   };
 
+  //   Useeffect
   useEffect(() => {
     changeQuestionPos();
     changeReviewPos();
-    changeExplanationPos();
+    // changeExplanationPos();
     changeCorrectData();
     changeWrongtData();
-  }, [windowWidth, htmlDataCorrect, IsWrongAns, data]);
+  }, [windowWidth]);
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -314,73 +341,41 @@ export default function ChooseUnit({
   }, [window.innerWidth]);
 
   useEffect(() => {
-    if (!divRef) return;
-    setisPageLoaded(true);
-
-    const div = document.createElement("div");
-    div.innerHTML = data?.question;
-
-    const imgElement = div.querySelector("img");
-
-    if (imgElement) {
-      const newImg = new Image();
-      newImg.src = imgElement.src;
-      newImg.onload = () => {
-        setisPageLoaded(false);
-      };
-    } else {
-      setisPageLoaded(false);
-    }
-  }, [data]);
+    setScreenHeight(data?.screenHeight);
+  }, []);
 
   const handleChangeOpacityOver = (e: any) => {
-    if (e.target.tagName === "DIV" || e.target.tagName === "IMG") {
-      const divElements = divRef.current.querySelectorAll("*");
-      const divArray = Array.from(divElements) as any[];
-      divArray.forEach((div) => {
-        if (div.tagName === "DIV" && div.id) {
-          if (div.id !== targetId) {
-            if (div.id === e.target.id) {
-              div.style.opacity = "70%";
-            } else {
-              div.style.opacity = "100%";
-            }
-          }
-        }
-        if (div.tagName === "IMG" && div.id) {
-          if (div.id !== targetId) {
-            if (div.id === e.target.id) {
-              div.style.scale = "106%";
-              div.style.boxShadow = "0 0 10px rgba(0,0,0,0.1)";
-            } else {
-              div.style.scale = "100%";
-              div.style.boxShadow = "none";
-            }
-          }
-        }
-      });
-    }
-  };
-  console.log(data._id);
+    const elements = divRef.current.querySelectorAll("*");
 
+    elements.forEach((el: any) => {
+      if (el.id === targetId) return;
+      if (el.tagName === "SPAN" && el.id) {
+        if (el.id === e.target.id) {
+          el.style.textDecoration = "underline";
+          el.style.textDecorationColor = "#00b4d8";
+          el.style.textDecorationThickness = "2px";
+          el.style.textUnderlineOffset = "3px";
+          el.style.textDecorationStyle = "dashed";
+          el.style.cursor = "pointer";
+        } else {
+          el.style.textDecoration = "none";
+          el.style.cursor = "pointer";
+        }
+      }
+    });
+  };
   const handleChangeOpacityOut = (e: any) => {
-    if (e.target.tagName === "DIV" || e.target.tagName === "IMG") {
-      const divElements = divRef.current.querySelectorAll("*");
-      const divArray = Array.from(divElements) as any[];
-      divArray.forEach((div) => {
-        if (div.tagName === "DIV") {
-          if (div.id !== targetId) {
-            div.style.opacity = "100%";
-          }
+    const elements = divRef.current.querySelectorAll("*");
+
+    elements.forEach((el: any) => {
+      if (el.id === targetId) return;
+      if (el.tagName === "SPAN" && el.id) {
+        if (el.id === e.target.id) {
+          el.style.textDecoration = "none";
+          el.style.cursor = "pointer";
         }
-        if (div.tagName === "IMG") {
-          if (div.id !== targetId) {
-            div.style.scale = "100%";
-            div.style.boxShadow = "none";
-          }
-        }
-      });
-    }
+      }
+    });
   };
 
   const handleClick = (e: any) => {
@@ -393,26 +388,18 @@ export default function ChooseUnit({
       divArray.forEach((div) => {
         if (div.id) {
           div.style.opacity = "100%";
-          if (e.target.tagName === "DIV") {
+          if (e.target.tagName === "SPAN") {
             if (div.id === e.target.id) {
               setTargetId(e.target.id);
-              div.style.backgroundColor = "#ade8f4";
-              div.style.scale = "107%";
+              div.style.textDecoration = "underline";
+              div.style.textDecorationColor = "#00b4d8";
+              div.style.textDecorationThickness = "2px";
+              div.style.textUnderlineOffset = "3px";
+              div.style.textDecorationStyle = "solid";
+              div.style.cursor = "pointer";
             } else {
-              div.style.backgroundColor = "white";
-              div.style.scale = "100%";
-            }
-          }
-          if (e.target.tagName === "IMG") {
-            if (div.id === e.target.id) {
-              setTargetId(e.target.id);
-              div.style.scale = "110%";
-              div.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
-              div.style.filter = "grayscale(0%)";
-            } else {
-              div.style.scale = "100%";
-              div.style.boxShadow = "none";
-              div.style.filter = "grayscale(100%)";
+              div.style.textDecoration = "none";
+              div.style.cursor = "pointer";
             }
           }
           htmlString += div.outerHTML;
@@ -421,6 +408,7 @@ export default function ChooseUnit({
       setHtmlDataCorrect(htmlString);
     }
   };
+  // Submit
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!targetId) {
@@ -447,42 +435,25 @@ export default function ChooseUnit({
           if (el.id) {
             data?.correctAnswer.forEach((ans: any) => {
               if (ans?.id === Number(el.id)) {
-                if (el.tagName === "DIV") {
+                if (el.tagName === "SPAN") {
                   if (JSON.parse(ans.answer)) {
                     // @ts-ignore
-                    el.style.opacity = "100%";
+                    el.style.textDecoration = "underline";
                     // @ts-ignore
-                    el.style.backgroundColor = "#9ef01a";
+                    el.style.textDecorationColor = "#00b4d8";
                     // @ts-ignore
-                    el.style.scale = "107%";
+                    el.style.textDecorationThickness = "2px";
+                    // @ts-ignore
+                    el.style.textUnderlineOffset = "3px";
+                    // @ts-ignore
+                    el.style.textDecorationStyle = "solid";
+                    // @ts-ignore
+                    el.style.cursor = "pointer";
                   } else {
                     // @ts-ignore
-                    el.style.opacity = "80%";
+                    el.style.textDecoration = "none";
                     // @ts-ignore
-                    el.style.backgroundColor = "#fff";
-                    // @ts-ignore
-                    el.style.scale = "100%";
-                  }
-                }
-                if (el.tagName === "IMG") {
-                  if (JSON.parse(ans.answer)) {
-                    // @ts-ignore
-                    el.style.scale = "110%";
-                    // @ts-ignore
-                    el.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
-                    // @ts-ignore
-                    el.style.filter = "grayscale(0%)";
-                    // @ts-ignore
-                    el.style.opacity = "100%";
-                  } else {
-                    // @ts-ignore
-                    el.style.scale = "100%";
-                    // @ts-ignore
-                    el.style.boxShadow = "none";
-                    // @ts-ignore
-                    el.style.filter = "grayscale(100%)";
-                    // @ts-ignore
-                    el.style.opacity = "60%";
+                    el.style.cursor = "pointer";
                   }
                 }
               }
@@ -497,58 +468,31 @@ export default function ChooseUnit({
 
         // For Wrong Html Data Start
         let htmlStringWrong = "";
-
         questionElements.forEach((el) => {
           if (el.id) {
-            if (el.tagName === "DIV") {
+            if (el.tagName === "SPAN") {
               // @ts-ignore
               if (el.id === targetId) {
                 // @ts-ignore
-                el.style.opacity = "100%";
+                el.style.textDecoration = "underline";
                 // @ts-ignore
-                el.style.backgroundColor = "#ff758f";
+                el.style.textDecorationColor = "#ff758f";
                 // @ts-ignore
-                el.style.scale = "107%";
+                el.style.textDecorationThickness = "2px";
+                // @ts-ignore
+                el.style.textUnderlineOffset = "3px";
+                // @ts-ignore
+                el.style.textDecorationStyle = "solid";
+                // @ts-ignore
+                el.style.cursor = "pointer";
               } else {
                 // @ts-ignore
-                el.style.opacity = "80%";
+                el.style.textDecoration = "none";
                 // @ts-ignore
-                el.style.backgroundColor = "white";
-                // @ts-ignore
-                el.style.scale = "100%";
+                el.style.cursor = "pointer";
               }
             }
-            if (el.tagName === "IMG") {
-              // @ts-ignore
-              if (el.id === targetId) {
-                // @ts-ignore
-                el.style.scale = "110%";
-                // @ts-ignore
-                el.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
-                // @ts-ignore
-                el.style.filter = "grayscale(0%)";
-                // @ts-ignore
-                el.style.opacity = "100%";
-              } else {
-                // @ts-ignore
-                el.style.scale = "100%";
-                // @ts-ignore
-                el.style.boxShadow = "none";
-                // @ts-ignore
-                el.style.filter = "grayscale(100%)";
-                // @ts-ignore
-                el.style.opacity = "60%";
-              }
-            }
-
-            const newDiv = document.createElement("div");
-            newDiv.style.position = "relative";
-            newDiv.style.width = `${Number(
-              // @ts-ignore
-              el.style.width.replace("px", "")
-            )}px`;
-            newDiv.appendChild(el);
-            htmlStringWrong += newDiv.outerHTML;
+            htmlStringWrong += el.outerHTML;
           }
         });
 
@@ -565,38 +509,37 @@ export default function ChooseUnit({
     }
     setQuestionAnswered((prev) => prev + 1);
   };
+
   const handleTryAgain = () => {
     setIsWrongAns(false);
     setTargetId(null);
   };
+  console.log(htmlDataWrong);
 
   return (
     <>
-      {isPageLoaded && (
-        <div className="w-full h-full bg-white absolute top-0 left-0 rounded-lg flex items-center justify-center z-50">
-          <div className="flex gap-2 items-center">
-            <Loader2 className="w-7 h-7 text-primary animate-spin" />
-            <p className="text-primary font-medium text-base">Loading...</p>
-          </div>
-        </div>
-      )}
       {IsWrongAns ? (
         <div className="flex flex-col gap-8 mt-5 w-full">
           {/* Correct Answer */}
-          <div className="relative flex flex-col gap-3  min-h-[380px]">
+          <div className="relative flex flex-col gap-3 min-h-[380px] w-[70%]  sm:w-[75%] md:w-[75%] lg:w-[850px]">
             <h1 className="text-4xl font-semibold text-blue">
               Sorry, incorrect...
             </h1>
             <p className="text-darkGreen text-base">The correct answer is:</p>
             <div
-              style={{ height: `${data?.questionHeight}px` }}
-              className="flex items-center relative"
+              style={{
+                height:
+                  windowWidth > 1000
+                    ? data?.questionHeight
+                    : data?.questionHeight + increaseHeight.screenHeight,
+              }}
+              className="flex items-start relative"
             >
               <div
-                className=""
+                className="w-full"
                 dangerouslySetInnerHTML={{
                   __html:
-                    windowWidth > 800
+                    windowWidth > 1000
                       ? htmlDataCorrect
                       : smallScreen.correctData,
                 }}
@@ -642,7 +585,7 @@ export default function ChooseUnit({
                   style={{
                     bottom: `calc(${data?.questionHeight || 0}px + 10px)`,
                   }}
-                  className={`absolute text-xl font-medium text-darkGreen whitespace-nowrap`}
+                  className={`absolute text-xl font-medium text-darkGreen whitespace-nowrap `}
                 >
                   You answered:
                 </h3>
@@ -653,6 +596,7 @@ export default function ChooseUnit({
                   className={`flex items-center absolute bottom-2`}
                 >
                   <div
+                    className="pointer-events-none select-none md:w-[700px]"
                     dangerouslySetInnerHTML={{
                       __html:
                         windowWidth > 1000
@@ -665,7 +609,7 @@ export default function ChooseUnit({
             </div>
           </div>
           {/* Solution */}
-          <div
+          {/* <div
             style={{
               height:
                 windowWidth > 1000
@@ -690,7 +634,7 @@ export default function ChooseUnit({
                     : smallScreen.explanation,
               }}
             />
-          </div>
+          </div> */}
           <Button
             onClick={handleTryAgain}
             className="w-[80px] bg-darkGreen hover:bg-darkGreen/80"
@@ -701,7 +645,7 @@ export default function ChooseUnit({
       ) : (
         <form
           onSubmit={handleSubmit}
-          className={`w-[68%] sm:w-[75%] md:w-[75%] lg:w-[850px] h-full absolute top-0 ${
+          className={`w-[68%] sm:w-[75%] md:w-[75%] lg:w-[800px] h-full absolute top-0 ${
             windowWidth > 800 ? "left-8" : "left-4"
           }`}
         >
