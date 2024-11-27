@@ -11,7 +11,7 @@ type Props = {
   isCorrectAns: boolean;
   setQuestionAnswered: Dispatch<SetStateAction<number>>;
   setScore: Dispatch<SetStateAction<number>>;
-  setScreenHeight: Dispatch<SetStateAction<number>>;
+  setScreenHeight: any;
 };
 
 export default function ChooseTextUnit({
@@ -247,7 +247,6 @@ export default function ChooseTextUnit({
   };
   const changeWrongtData = () => {
     const div = document.createElement("div");
-    div.style.pointerEvents = "none";
     div.innerHTML = htmlDataWrong;
     const elements = Array.from(div.querySelectorAll("*"));
 
@@ -263,19 +262,13 @@ export default function ChooseTextUnit({
     });
 
     let htmlString = "";
-    let increaseHeight = 0;
+
+    let prevTop = 0;
+
     newElements.forEach((el) => {
       const div = document.createElement("div");
-      div.style.width =
-        windowWidth > 800
-          ? "600px"
-          : windowWidth > 600
-          ? "400px"
-          : windowWidth > 400
-          ? "300px"
-          : "200px";
-      div.style.pointerEvents = "none";
       div.style.position = "relative";
+      div.style.width = "600px";
 
       let offsetValue = 0;
       if (el.tagName === "SPAN") {
@@ -289,46 +282,99 @@ export default function ChooseTextUnit({
           if (widthValue > 350) {
             // @ts-ignore
             el.style.width = "300px";
+            // @ts-ignore
+            const prevHeight = Number(el.style.height.replace("px", ""));
+            // @ts-ignore
+            el.style.height = prevHeight + 40 + "px";
+            // @ts-ignore
+            prevTop += Number(el.style.top.replace("px", ""));
+            // @ts-ignore
+            el.style.top = prevTop + 40 + "px";
             const insideText = el.querySelector("p");
             if (insideText) {
               insideText.style.fontSize = "14px";
             }
-            // @ts-ignore
-            el.style.pointerEvents = "auto";
             div.appendChild(el);
           } else {
-            // @ts-ignore
-            el.style.pointerEvents = "auto";
             div.appendChild(el);
           }
         } else {
-          // @ts-ignore
-          el.style.pointerEvents = "auto";
           div.appendChild(el);
         }
       }
       if (offsetValue > 0) {
         if (offsetValue > 30) {
           div.style.height = offsetValue + "px";
-          increaseHeight += offsetValue;
         }
-        // @ts-ignore
-        el.style.pointerEvents = "auto";
         div.appendChild(el);
       }
 
       htmlString += div.outerHTML;
     });
     setsmallScreen((prev) => ({ ...prev, wrongData: htmlString }));
-    // setIncreaseHeight((prev) => ({ ...prev, questionHeight: increaseHeight }));
-    // setScreenHeight(data?.screenHeight + increaseHeight);
+  };
+  const changeExplanationPos = () => {
+    const div = document.createElement("div");
+    div.innerHTML = data?.explanation;
+    const elements = Array.from(div.querySelectorAll("*"));
+
+    const newElements = elements.filter((el) => {
+      // @ts-ignore
+      const topValue = el.style.top;
+      return topValue && topValue;
+    });
+
+    newElements.sort((a, b) => {
+      // @ts-ignore
+      return parseFloat(a.style.top) - parseFloat(b.style.top);
+    });
+
+    let htmlString = "";
+    let increaseHeight = 0;
+
+    newElements.forEach((el) => {
+      const div = document.createElement("div");
+      div.style.position = "relative";
+
+      let offsetValue = 0;
+      if (el.tagName === "SPAN") {
+        document.body.appendChild(el);
+        offsetValue = el.getBoundingClientRect().height;
+        document.body.removeChild(el);
+      } else {
+        div.appendChild(el);
+      }
+      if (offsetValue > 0) {
+        if (offsetValue > 30 && el.tagName === "SPAN") {
+          increaseHeight += offsetValue;
+          div.style.height = offsetValue + "px";
+        }
+        if (el.tagName === "DIV" || el.tagName === "IMG") {
+          // @ts-ignore
+          const widthValue = Number(el.style.width.replace("px", ""));
+          if (widthValue > 350) {
+            // @ts-ignore
+            el.style.width = "300px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
+          }
+        }
+        div.appendChild(el);
+      }
+
+      htmlString += div.outerHTML;
+    });
+    setsmallScreen((prev) => ({ ...prev, explanation: htmlString }));
+    setIncreaseHeight((prev) => ({ ...prev, explanation: increaseHeight }));
   };
 
   //   Useeffect
   useEffect(() => {
     changeQuestionPos();
     changeReviewPos();
-    // changeExplanationPos();
+    changeExplanationPos();
     changeCorrectData();
     changeWrongtData();
   }, [windowWidth]);
@@ -341,8 +387,11 @@ export default function ChooseTextUnit({
   }, [window.innerWidth]);
 
   useEffect(() => {
-    setScreenHeight(data?.screenHeight);
-  }, []);
+    if (data?.screenHeight) {
+      setScreenHeight(data?.screenHeight);
+      changeQuestionPos();
+    }
+  }, [data]);
 
   const handleChangeOpacityOver = (e: any) => {
     const elements = divRef.current.querySelectorAll("*");
@@ -449,6 +498,7 @@ export default function ChooseTextUnit({
                     el.style.textDecorationStyle = "solid";
                     // @ts-ignore
                     el.style.cursor = "pointer";
+                    htmlStringCorrect += el.outerHTML;
                   } else {
                     // @ts-ignore
                     el.style.textDecoration = "none";
@@ -458,8 +508,6 @@ export default function ChooseTextUnit({
                 }
               }
             });
-            // parentDivCorrect.appendChild(el);
-            htmlStringCorrect += el.outerHTML;
           }
         });
         // parentDivCorrect.style.display = "flex";
@@ -485,6 +533,7 @@ export default function ChooseTextUnit({
                 el.style.textDecorationStyle = "solid";
                 // @ts-ignore
                 el.style.cursor = "pointer";
+                htmlStringWrong += el.outerHTML;
               } else {
                 // @ts-ignore
                 el.style.textDecoration = "none";
@@ -492,7 +541,6 @@ export default function ChooseTextUnit({
                 el.style.cursor = "pointer";
               }
             }
-            htmlStringWrong += el.outerHTML;
           }
         });
 
@@ -580,7 +628,7 @@ export default function ChooseTextUnit({
                     windowWidth > 1000 ? data?.review : smallScreen.review,
                 }}
               />
-              <div className="absolute bottom-2 flex flex-col gap-3 h-full">
+              <div className="flex flex-col gap-3 h-full">
                 <h3
                   style={{
                     bottom: `calc(${data?.questionHeight || 0}px + 10px)`,
@@ -593,15 +641,12 @@ export default function ChooseTextUnit({
                   style={{
                     bottom: `${data?.questionHeight}px`,
                   }}
-                  className={`flex items-center absolute bottom-2`}
+                  className={`flex items-center absolute bottom-2 w-[90%]  md:w-[800px]`}
                 >
                   <div
-                    className="pointer-events-none select-none md:w-[700px]"
+                    className="pointer-events-none select-none"
                     dangerouslySetInnerHTML={{
-                      __html:
-                        windowWidth > 1000
-                          ? htmlDataWrong
-                          : smallScreen.wrongData,
+                      __html: htmlDataWrong,
                     }}
                   />
                 </div>
@@ -609,7 +654,7 @@ export default function ChooseTextUnit({
             </div>
           </div>
           {/* Solution */}
-          {/* <div
+          <div
             style={{
               height:
                 windowWidth > 1000
@@ -634,7 +679,7 @@ export default function ChooseTextUnit({
                     : smallScreen.explanation,
               }}
             />
-          </div> */}
+          </div>
           <Button
             onClick={handleTryAgain}
             className="w-[80px] bg-darkGreen hover:bg-darkGreen/80"

@@ -60,6 +60,8 @@ export default function ChooseUnit({
 
     let htmlString = "";
 
+    let prevTop = 0;
+
     newElements.forEach((el) => {
       const div = document.createElement("div");
       div.style.position = "relative";
@@ -76,6 +78,14 @@ export default function ChooseUnit({
           if (widthValue > 350) {
             // @ts-ignore
             el.style.width = "300px";
+            // @ts-ignore
+            const prevHeight = Number(el.style.height.replace("px", ""));
+            // @ts-ignore
+            el.style.height = prevHeight + 40 + "px";
+            // @ts-ignore
+            prevTop += Number(el.style.top.replace("px", ""));
+            // @ts-ignore
+            el.style.top = prevTop + 40 + "px";
             const insideText = el.querySelector("p");
             if (insideText) {
               insideText.style.fontSize = "14px";
