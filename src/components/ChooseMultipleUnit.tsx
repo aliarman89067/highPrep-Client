@@ -12,6 +12,7 @@ type Props = {
   isCorrectAns: boolean;
   setQuestionAnswered: Dispatch<SetStateAction<number>>;
   setScore: Dispatch<SetStateAction<number>>;
+  setScreenHeight: any;
 };
 
 export default function ChooseMultipleUnit({
@@ -23,6 +24,7 @@ export default function ChooseMultipleUnit({
   setIsCorrectAns,
   setQuestionAnswered,
   setScore,
+  setScreenHeight,
 }: Props) {
   const [targetId, setTargetId] = useState<number[] | null>(null);
   const [htmlDataCorrect, setHtmlDataCorrect] = useState<string>("");
@@ -34,11 +36,14 @@ export default function ChooseMultipleUnit({
     review: "",
     explanation: "",
     correctData: "",
+    wrongData: "",
+    reminder: "",
   });
   const [increaseHeight, setIncreaseHeight] = useState({
     question: 0,
     review: 0,
     explanation: 0,
+    reminder: 0,
   });
 
   const divRef = useRef<any>();
@@ -60,6 +65,7 @@ export default function ChooseMultipleUnit({
     });
 
     let htmlString = "";
+    let increaseOffsetHeight = 0;
 
     newElements.forEach((el) => {
       const div = document.createElement("div");
@@ -74,9 +80,21 @@ export default function ChooseMultipleUnit({
         if (el.tagName === "DIV" && el.id) {
           // @ts-ignore
           const widthValue = Number(el.style.width.replace("px", ""));
-          if (widthValue > 300) {
+          if (widthValue > 350) {
             // @ts-ignore
-            el.style.width = "280px";
+            el.style.width = "300px";
+            // @ts-ignore
+            // const prevHeight = Number(el.style.height.replace("px", ""));
+            // // @ts-ignore
+            // el.style.height = prevHeight + 40 + "px";
+            // // @ts-ignore
+            // prevTop += Number(el.style.top.replace("px", ""));
+            // // @ts-ignore
+            // el.style.top = prevTop + 40 + "px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
             div.appendChild(el);
           } else {
             div.appendChild(el);
@@ -88,6 +106,7 @@ export default function ChooseMultipleUnit({
       if (offsetValue > 0) {
         if (offsetValue > 30) {
           div.style.height = offsetValue + "px";
+          increaseOffsetHeight += offsetValue;
         }
         div.appendChild(el);
       }
@@ -95,6 +114,7 @@ export default function ChooseMultipleUnit({
       htmlString += div.outerHTML;
     });
     setSmallScreen((prev) => ({ ...prev, question: htmlString }));
+    setScreenHeight(data?.screenHeight + increaseOffsetHeight);
   };
 
   const changeReviewPos = () => {
@@ -126,6 +146,18 @@ export default function ChooseMultipleUnit({
         offsetValue = el.getBoundingClientRect().height;
         document.body.removeChild(el);
       } else {
+        if (el.tagName === "DIV" || el.tagName === "IMG") {
+          // @ts-ignore
+          const widthValue = Number(el.style.width.replace("px", ""));
+          if (widthValue > 350) {
+            // @ts-ignore
+            el.style.width = "300px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
+          }
+        }
         div.appendChild(el);
       }
       if (offsetValue > 0) {
@@ -171,6 +203,18 @@ export default function ChooseMultipleUnit({
         offsetValue = el.getBoundingClientRect().height;
         document.body.removeChild(el);
       } else {
+        if (el.tagName === "DIV" || el.tagName === "IMG") {
+          // @ts-ignore
+          const widthValue = Number(el.style.width.replace("px", ""));
+          if (widthValue > 350) {
+            // @ts-ignore
+            el.style.width = "300px";
+            const insideText = el.querySelector("p");
+            if (insideText) {
+              insideText.style.fontSize = "14px";
+            }
+          }
+        }
         div.appendChild(el);
       }
       if (offsetValue > 0) {
@@ -185,6 +229,66 @@ export default function ChooseMultipleUnit({
     });
     setSmallScreen((prev) => ({ ...prev, explanation: htmlString }));
     setIncreaseHeight((prev) => ({ ...prev, explanation: increaseHeight }));
+  };
+
+  const changeReminderPos = () => {
+    if (data?.reminder) {
+      const div = document.createElement("div");
+      div.innerHTML = data?.reminder;
+      const elements = Array.from(div.querySelectorAll("*"));
+
+      const newElements = elements.filter((el) => {
+        // @ts-ignore
+        const topValue = el.style.top;
+        return topValue && topValue;
+      });
+
+      newElements.sort((a, b) => {
+        // @ts-ignore
+        return parseFloat(a.style.top) - parseFloat(b.style.top);
+      });
+
+      let htmlString = "";
+      let increaseHeight = 0;
+
+      newElements.forEach((el) => {
+        const div = document.createElement("div");
+        div.style.position = "relative";
+
+        let offsetValue = 0;
+        if (el.tagName === "SPAN") {
+          document.body.appendChild(el);
+          offsetValue = el.getBoundingClientRect().height;
+          document.body.removeChild(el);
+        } else {
+          if (el.tagName === "DIV" || el.tagName === "IMG") {
+            // @ts-ignore
+            const widthValue = Number(el.style.width.replace("px", ""));
+            if (widthValue > 350) {
+              // @ts-ignore
+              el.style.width = "300px";
+              const insideText = el.querySelector("p");
+              if (insideText) {
+                insideText.style.fontSize = "14px";
+              }
+            }
+          }
+          div.appendChild(el);
+        }
+        if (offsetValue > 0) {
+          if (offsetValue > 30) {
+            div.style.height = offsetValue + "px";
+            increaseHeight += offsetValue;
+          }
+
+          div.appendChild(el);
+        }
+
+        htmlString += div.outerHTML;
+      });
+      setSmallScreen((prev) => ({ ...prev, reminder: htmlString }));
+      setIncreaseHeight((prev) => ({ ...prev, reminder: increaseHeight }));
+    }
   };
 
   const changeCorrectData = () => {
@@ -205,12 +309,16 @@ export default function ChooseMultipleUnit({
     parentDiv.style.position = "relative";
     parentDiv.style.height = data?.questionHeight + "px";
     newElements.forEach((el) => {
-      if (el.tagName === "DIV") {
+      if (el.tagName === "DIV" || el.tagName === "IMG") {
         // @ts-ignore
         const widthValue = Number(el.style.width.replace("px", ""));
         if (widthValue > 300) {
           // @ts-ignore
           el.style.width = "270px";
+          const insideText = el.querySelector("p");
+          if (insideText) {
+            insideText.style.fontSize = "14px";
+          }
         }
       }
       parentDiv.appendChild(el);
@@ -219,11 +327,54 @@ export default function ChooseMultipleUnit({
     setSmallScreen((prev) => ({ ...prev, correctData: parentDiv.outerHTML }));
   };
 
+  const changeWrongtData = () => {
+    const div = document.createElement("div");
+    div.innerHTML = htmlDataWrong;
+
+    const elements = Array.from(div.querySelectorAll("*"));
+
+    const newElements = elements.filter((el) => {
+      // @ts-ignore
+      const topValue = el.style?.top;
+      return topValue && topValue;
+    });
+    newElements.sort((a, b) => {
+      // @ts-ignore
+      return parseFloat(a.style.top) - parseFloat(b.style.top);
+    });
+
+    const parentDiv = document.createElement("div");
+
+    newElements.forEach((el) => {
+      if (el.tagName === "DIV" || el.tagName === "IMG") {
+        // @ts-ignore
+        const widthValue = Number(el.style.width.replace("px", ""));
+        if (widthValue > 300) {
+          // @ts-ignore
+          el.style.width = "270px";
+          const insideText = el.querySelector("p");
+          if (insideText) {
+            insideText.style.fontSize = "14px";
+          }
+        }
+      }
+      const newDiv = document.createElement("div");
+      newDiv.style.position = "relative";
+      // @ts-ignore
+      newDiv.style.width = Number(el.style.width.replace("px", "")) + "px";
+      newDiv.appendChild(el);
+      parentDiv.appendChild(newDiv);
+    });
+    setSmallScreen((prev) => ({ ...prev, wrongData: parentDiv.outerHTML }));
+  };
+
   useEffect(() => {
     changeQuestionPos();
     changeReviewPos();
     changeExplanationPos();
     changeCorrectData();
+    changeWrongtData();
+    changeReminderPos();
   }, [windowWidth, htmlDataCorrect, IsWrongAns, data]);
 
   useEffect(() => {
@@ -236,6 +387,13 @@ export default function ChooseMultipleUnit({
       setWindowWidth(width);
     });
   }, [window.innerWidth]);
+
+  useEffect(() => {
+    if (data?.screenHeight) {
+      setScreenHeight(data?.screenHeight);
+      changeQuestionPos();
+    }
+  }, [data]);
 
   let isImageLoad = false;
 
@@ -531,6 +689,8 @@ export default function ChooseMultipleUnit({
     setTargetId(null);
   };
 
+  console.log(data?._id);
+
   return (
     <>
       {isPageLoaded && (
@@ -557,7 +717,7 @@ export default function ChooseMultipleUnit({
                 className=""
                 dangerouslySetInnerHTML={{
                   __html:
-                    windowWidth > 800
+                    windowWidth > 1000
                       ? htmlDataCorrect
                       : smallScreen.correctData,
                 }}
@@ -578,12 +738,12 @@ export default function ChooseMultipleUnit({
             <div
               style={{
                 height:
-                  windowWidth > 800
+                  windowWidth > 1000
                     ? `${data?.reviewHeight}px`
                     : `${data?.reviewHeight + increaseHeight.review}px`,
               }}
               className={`relative border border-gray-400 rounded-md ${
-                windowWidth > 800 ? "px-8" : "px-6"
+                windowWidth > 1000 ? "px-8" : "px-6"
               } py-5`}
             >
               <img
@@ -594,7 +754,8 @@ export default function ChooseMultipleUnit({
               <div
                 className="relative"
                 dangerouslySetInnerHTML={{
-                  __html: windowWidth > 800 ? data?.review : smallScreen.review,
+                  __html:
+                    windowWidth > 1000 ? data?.review : smallScreen.review,
                 }}
               />
               <div className="absolute bottom-3 flex flex-col gap-3 h-full">
@@ -610,21 +771,55 @@ export default function ChooseMultipleUnit({
                   style={{ bottom: `${data?.questionHeight}px` }}
                   className={`flex items-center absolute`}
                 >
-                  <div dangerouslySetInnerHTML={{ __html: htmlDataWrong }} />
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        windowWidth > 1000
+                          ? htmlDataWrong
+                          : smallScreen.wrongData,
+                    }}
+                  />
                 </div>
               </div>
             </div>
           </div>
+          {/* Reminder */}
+          {data?.reminder && (
+            <div
+              style={{
+                height:
+                  windowWidth > 1000
+                    ? `${data?.reminderHeight}px`
+                    : `${data?.reminderHeight + increaseHeight.reminder}px`,
+              }}
+              className={`relative border border-gray-400 rounded-md py-5 ${
+                windowWidth > 1000 ? "px-8" : "px-6"
+              }`}
+            >
+              <img
+                src={icons.reminder}
+                alt="Review"
+                className="absolute -left-3 top-5 w-6 object-contain"
+              />
+              <div
+                className="relative"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    windowWidth > 800 ? data?.reminder : smallScreen.reminder,
+                }}
+              />
+            </div>
+          )}
           {/* Solution */}
           <div
             style={{
               height:
-                windowWidth > 800
+                windowWidth > 1000
                   ? `${data?.explanationHeight}px`
                   : `${data?.explanationHeight + increaseHeight.explanation}px`,
             }}
             className={`relative border border-gray-400 rounded-md py-5 ${
-              windowWidth > 800 ? "px-8" : "px-6"
+              windowWidth > 1000 ? "px-8" : "px-6"
             }`}
           >
             <img
@@ -653,7 +848,7 @@ export default function ChooseMultipleUnit({
         <form
           onSubmit={handleSubmit}
           className={`w-[68%] sm:w-[75%] md:w-[75%] lg:w-[850px] h-full absolute top-0 ${
-            windowWidth > 800 ? "left-8" : "left-4"
+            windowWidth > 1000 ? "left-8" : "left-4"
           }`}
         >
           <div
@@ -662,7 +857,8 @@ export default function ChooseMultipleUnit({
             onMouseOver={handleChangeOpacityOver}
             onMouseOut={handleChangeOpacityOut}
             dangerouslySetInnerHTML={{
-              __html: windowWidth > 800 ? data?.question : smallScreen.question,
+              __html:
+                windowWidth > 1000 ? data?.question : smallScreen.question,
             }}
           />
         </form>

@@ -25,7 +25,7 @@ export default function Unit() {
   const [isCorrectAns, setIsCorrectAns] = useState<boolean>(false);
   const [questionAnswered, setQuestionAnswered] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
-  const [questionNumber, setQuestionNumber] = useState<number>(0);
+  const [questionNumber, setQuestionNumber] = useState<number>(4);
   const [awardingWord, setAwardingWord] = useState<string>("Outstanding");
   const [isUniteComplete, setIsUniteComplete] = useState<boolean>(false);
   const [totalTime, setTotalTime] = useState<string>("");
@@ -169,6 +169,7 @@ export default function Unit() {
               {data.subUnits[questionNumber].type === "Choose One" && (
                 <ChooseUnit
                   data={data.subUnits[questionNumber]}
+                  setScreenHeight={setScreenHeight}
                   setIsIncomplete={setIsIncomplete}
                   IsWrongAns={isWrongAns}
                   setIsWrongAns={setIsWrongAns}
@@ -179,6 +180,7 @@ export default function Unit() {
               )}
               {data.subUnits[questionNumber].type === "Choose Multiple" && (
                 <ChooseMultipleUnit
+                  setScreenHeight={setScreenHeight}
                   data={data.subUnits[questionNumber]}
                   setIsIncomplete={setIsIncomplete}
                   IsWrongAns={isWrongAns}

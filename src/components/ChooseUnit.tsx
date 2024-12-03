@@ -11,6 +11,7 @@ type Props = {
   setIsCorrectAns: Dispatch<SetStateAction<boolean>>;
   setQuestionAnswered: Dispatch<SetStateAction<number>>;
   setScore: Dispatch<SetStateAction<number>>;
+  setScreenHeight: any;
 };
 
 export default function ChooseUnit({
@@ -21,6 +22,7 @@ export default function ChooseUnit({
   setIsCorrectAns,
   setQuestionAnswered,
   setScore,
+  setScreenHeight,
 }: Props) {
   const [targetId, setTargetId] = useState<null | number>(null);
   const [htmlDataCorrect, setHtmlDataCorrect] = useState<string>("");
@@ -30,11 +32,13 @@ export default function ChooseUnit({
   const [increaseHeight, setIncreaseHeight] = useState({
     question: 0,
     review: 0,
+    reminder: 0,
     explanation: 0,
   });
   const [smallScreen, setsmallScreen] = useState({
     question: "",
     review: "",
+    reminder: "",
     explanation: "",
     correctData: "",
     wrongData: "",
@@ -59,8 +63,7 @@ export default function ChooseUnit({
     });
 
     let htmlString = "";
-
-    let prevTop = 0;
+    let increaseOffsetHeight = 0;
 
     newElements.forEach((el) => {
       const div = document.createElement("div");
@@ -75,17 +78,17 @@ export default function ChooseUnit({
         if (el.tagName === "DIV" && el.id) {
           // @ts-ignore
           const widthValue = Number(el.style.width.replace("px", ""));
-          if (widthValue > 350) {
+          if (widthValue >= 300) {
             // @ts-ignore
-            el.style.width = "300px";
+            el.style.width = "280px";
             // @ts-ignore
-            const prevHeight = Number(el.style.height.replace("px", ""));
-            // @ts-ignore
-            el.style.height = prevHeight + 40 + "px";
-            // @ts-ignore
-            prevTop += Number(el.style.top.replace("px", ""));
-            // @ts-ignore
-            el.style.top = prevTop + 40 + "px";
+            // const prevHeight = Number(el.style.height.replace("px", ""));
+            // // @ts-ignore
+            // el.style.height = prevHeight + 40 + "px";
+            // // @ts-ignore
+            // prevTop += Number(el.style.top.replace("px", ""));
+            // // @ts-ignore
+            // el.style.top = prevTop + 40 + "px";
             const insideText = el.querySelector("p");
             if (insideText) {
               insideText.style.fontSize = "14px";
@@ -101,6 +104,7 @@ export default function ChooseUnit({
       if (offsetValue > 0) {
         if (offsetValue > 30) {
           div.style.height = offsetValue + "px";
+          increaseOffsetHeight += offsetValue;
         }
         div.appendChild(el);
       }
@@ -108,6 +112,7 @@ export default function ChooseUnit({
       htmlString += div.outerHTML;
     });
     setsmallScreen((prev) => ({ ...prev, question: htmlString }));
+    setScreenHeight(data?.screenHeight + increaseOffsetHeight);
   };
 
   const changeReviewPos = () => {
@@ -166,6 +171,65 @@ export default function ChooseUnit({
     });
     setsmallScreen((prev) => ({ ...prev, review: htmlString }));
     setIncreaseHeight((prev) => ({ ...prev, review: increaseHeight }));
+  };
+  const changeReminderPos = () => {
+    if (data?.reminder) {
+      const div = document.createElement("div");
+      div.innerHTML = data?.reminder;
+      const elements = Array.from(div.querySelectorAll("*"));
+
+      const newElements = elements.filter((el) => {
+        // @ts-ignore
+        const topValue = el.style.top;
+        return topValue && topValue;
+      });
+
+      newElements.sort((a, b) => {
+        // @ts-ignore
+        return parseFloat(a.style.top) - parseFloat(b.style.top);
+      });
+
+      let htmlString = "";
+      let increaseHeight = 0;
+
+      newElements.forEach((el) => {
+        const div = document.createElement("div");
+        div.style.position = "relative";
+
+        let offsetValue = 0;
+        if (el.tagName === "SPAN") {
+          document.body.appendChild(el);
+          offsetValue = el.getBoundingClientRect().height;
+          document.body.removeChild(el);
+        } else {
+          if (el.tagName === "DIV" || el.tagName === "IMG") {
+            // @ts-ignore
+            const widthValue = Number(el.style.width.replace("px", ""));
+            if (widthValue > 350) {
+              // @ts-ignore
+              el.style.width = "300px";
+              const insideText = el.querySelector("p");
+              if (insideText) {
+                insideText.style.fontSize = "14px";
+              }
+            }
+          }
+          div.appendChild(el);
+        }
+        if (offsetValue > 0) {
+          if (offsetValue > 30) {
+            div.style.height = offsetValue + "px";
+            increaseHeight += offsetValue;
+          }
+
+          div.appendChild(el);
+        }
+
+        htmlString += div.outerHTML;
+      });
+      setsmallScreen((prev) => ({ ...prev, reminder: htmlString }));
+      setIncreaseHeight((prev) => ({ ...prev, reminder: increaseHeight }));
+    }
   };
 
   const changeExplanationPos = () => {
@@ -249,9 +313,9 @@ export default function ChooseUnit({
       if (el.tagName === "DIV" || el.tagName === "IMG") {
         // @ts-ignore
         const widthValue = Number(el.style.width.replace("px", ""));
-        if (widthValue > 300) {
+        if (widthValue >= 300) {
           // @ts-ignore
-          el.style.width = "270px";
+          el.style.width = "280px";
           const insideText = el.querySelector("p");
           if (insideText) {
             insideText.style.fontSize = "14px";
@@ -314,6 +378,7 @@ export default function ChooseUnit({
     changeExplanationPos();
     changeCorrectData();
     changeWrongtData();
+    changeReminderPos();
   }, [windowWidth, htmlDataCorrect, IsWrongAns, data]);
 
   useEffect(() => {
@@ -340,6 +405,13 @@ export default function ChooseUnit({
       };
     } else {
       setisPageLoaded(false);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.screenHeight) {
+      setScreenHeight(data?.screenHeight);
+      changeQuestionPos();
     }
   }, [data]);
 
@@ -371,7 +443,7 @@ export default function ChooseUnit({
       });
     }
   };
-  console.log(data._id);
+  console.log(data._id, "Choose one ID");
 
   const handleChangeOpacityOut = (e: any) => {
     if (e.target.tagName === "DIV" || e.target.tagName === "IMG") {
@@ -606,7 +678,7 @@ export default function ChooseUnit({
                 className=""
                 dangerouslySetInnerHTML={{
                   __html:
-                    windowWidth > 800
+                    windowWidth > 1000
                       ? htmlDataCorrect
                       : smallScreen.correctData,
                 }}
@@ -674,6 +746,33 @@ export default function ChooseUnit({
               </div>
             </div>
           </div>
+          {/* Reminder */}
+          {data?.reminder && (
+            <div
+              style={{
+                height:
+                  windowWidth > 1000
+                    ? `${data?.reminderHeight}px`
+                    : `${data?.reminderHeight + increaseHeight.reminder}px`,
+              }}
+              className={`relative border border-gray-400 rounded-md py-5 ${
+                windowWidth > 800 ? "px-8" : "px-6"
+              }`}
+            >
+              <img
+                src={icons.reminder}
+                alt="Review"
+                className="absolute -left-3 top-5 w-6 object-contain"
+              />
+              <div
+                className="relative"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    windowWidth > 1000 ? data?.reminder : smallScreen.reminder,
+                }}
+              />
+            </div>
+          )}
           {/* Solution */}
           <div
             style={{
@@ -695,7 +794,7 @@ export default function ChooseUnit({
               className="relative"
               dangerouslySetInnerHTML={{
                 __html:
-                  windowWidth > 800
+                  windowWidth > 1000
                     ? data?.explanation
                     : smallScreen.explanation,
               }}

@@ -377,7 +377,7 @@ export default function ChooseTextUnit({
     changeExplanationPos();
     changeCorrectData();
     changeWrongtData();
-  }, [windowWidth]);
+  }, [windowWidth, isCorrectAns, IsWrongAns]);
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -479,7 +479,26 @@ export default function ChooseTextUnit({
         const divElement = document.createElement("div");
         divElement.innerHTML = data?.example;
         const questionElements = divElement.querySelectorAll("*");
+
+        // Calculate Top Value Start
+        const elements = Array.from(divElement.querySelectorAll("*"));
+
+        const newElements = elements.filter((el) => {
+          // @ts-ignore
+          const topValue = el.style.top;
+          const isIdExist = el.id;
+          if (topValue && isIdExist) return topValue;
+        });
+
+        newElements.sort((a, b) => {
+          // @ts-ignore
+          return parseFloat(a.style.top) - parseFloat(b.style.top);
+        });
+        // Calculate Top Value End
+
         let htmlStringCorrect = "";
+        let elOffsetHeightCorrect = 0;
+
         questionElements.forEach((el) => {
           if (el.id) {
             data?.correctAnswer.forEach((ans: any) => {
@@ -498,6 +517,25 @@ export default function ChooseTextUnit({
                     el.style.textDecorationStyle = "solid";
                     // @ts-ignore
                     el.style.cursor = "pointer";
+
+                    // for (let i = 0; i <= newElements.length - 1; i++) {
+                    //   if (el != newElements[0]) {
+                    //     const prevTopValue = Number(
+                    //       // @ts-ignore
+                    //       el.style.top.replace("px", "")
+                    //     );
+                    //     document.body.appendChild(el);
+                    //     elOffsetHeightCorrect =
+                    //       el.getBoundingClientRect().height;
+                    //     document.body.removeChild(el);
+                    //     // @ts-ignore
+                    //     el.style.top =
+                    //       prevTopValue - elOffsetHeightCorrect + "px";
+                    //   }
+                    // }
+                    // @ts-ignore
+                    el.style.top = "10px";
+
                     htmlStringCorrect += el.outerHTML;
                   } else {
                     // @ts-ignore
@@ -515,7 +553,9 @@ export default function ChooseTextUnit({
         // For Correct Html Data End
 
         // For Wrong Html Data Start
+
         let htmlStringWrong = "";
+        let elOffsetHeightWrong = 0;
         questionElements.forEach((el) => {
           if (el.id) {
             if (el.tagName === "SPAN") {
@@ -533,6 +573,19 @@ export default function ChooseTextUnit({
                 el.style.textDecorationStyle = "solid";
                 // @ts-ignore
                 el.style.cursor = "pointer";
+                // @ts-ignore
+                // for (let i = 0; i <= newElements.length - 1; i++) {
+                //   if (el != newElements[0]) {
+                //     // @ts-ignore
+                //     const prevTopValue = Number(el.style.top.replace("px", ""));
+                //     document.body.appendChild(el);
+                //     elOffsetHeightWrong = el.getBoundingClientRect().height;
+                //     document.body.removeChild(el);
+                //     // @ts-ignore
+                //     el.style.top = prevTopValue - elOffsetHeightWrong + "px";
+                //   }
+                // }
+                el.style.top = "10px";
                 htmlStringWrong += el.outerHTML;
               } else {
                 // @ts-ignore
@@ -562,7 +615,8 @@ export default function ChooseTextUnit({
     setIsWrongAns(false);
     setTargetId(null);
   };
-  console.log(htmlDataWrong);
+
+  console.log(data?._id);
 
   return (
     <>
@@ -584,7 +638,7 @@ export default function ChooseTextUnit({
               className="flex items-start relative"
             >
               <div
-                className="w-full"
+                className="w-full pointer-events-none select-none"
                 dangerouslySetInnerHTML={{
                   __html:
                     windowWidth > 1000
@@ -641,7 +695,7 @@ export default function ChooseTextUnit({
                   style={{
                     bottom: `${data?.questionHeight}px`,
                   }}
-                  className={`flex items-center absolute bottom-2 w-[90%]  md:w-[800px]`}
+                  className={`flex items-center absolute bottom-2 w-[90%] lg:w-[800px]`}
                 >
                   <div
                     className="pointer-events-none select-none"
