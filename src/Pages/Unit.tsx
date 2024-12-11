@@ -25,7 +25,7 @@ export default function Unit() {
   const [isCorrectAns, setIsCorrectAns] = useState<boolean>(false);
   const [questionAnswered, setQuestionAnswered] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
-  const [questionNumber, setQuestionNumber] = useState<number>(4);
+  const [questionNumber, setQuestionNumber] = useState<number>(0);
   const [awardingWord, setAwardingWord] = useState<string>("Outstanding");
   const [isUniteComplete, setIsUniteComplete] = useState<boolean>(false);
   const [totalTime, setTotalTime] = useState<string>("");
@@ -87,7 +87,6 @@ export default function Unit() {
     "Extraordinary",
     "Spectacular",
   ];
-
   return (
     <>
       <Navbar />

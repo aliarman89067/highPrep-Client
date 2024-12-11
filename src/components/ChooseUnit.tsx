@@ -355,7 +355,7 @@ export default function ChooseUnit({
         const widthValue = Number(el.style.width.replace("px", ""));
         if (widthValue > 300) {
           // @ts-ignore
-          el.style.width = "270px";
+          el.style.width = "300px";
           const insideText = el.querySelector("p");
           if (insideText) {
             insideText.style.fontSize = "14px";

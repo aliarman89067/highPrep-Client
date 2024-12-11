@@ -253,7 +253,9 @@ export default function InputUnit({
     for (const element of formElements) {
       for (const ans of data.correctAnswer) {
         if (Number(ans.id) === Number(element.id)) {
-          if (ans.answer !== element.value.trim()) {
+          if (
+            ans.answer?.toLowerCase() != element.value.trim()?.toLowerCase()
+          ) {
             finalAnswer = false;
             break;
           }
@@ -271,7 +273,7 @@ export default function InputUnit({
     }
     setQuestionAnswered((prev) => prev + 1);
   };
-  console.log(data._id);
+
   return (
     <>
       {isPageLoaded && (
